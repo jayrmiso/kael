@@ -1,0 +1,14 @@
+id = "kael-builder"
+name = "kael-builder"
+description = "Lightweight implementation worker for Kael Spec. Builds one scoped task or milestone with senior TDD discipline."
+instructions = "./kael-builder.tpl.md"
+
+[vendor.codex.config]
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+
+[vendor.claude.config]
+model = "sonnet"
+tools = ["Bash", "Read", "Edit", "Write", "Grep", "Glob"]
+
