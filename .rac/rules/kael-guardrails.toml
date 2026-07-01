@@ -1,0 +1,83 @@
+[[rule]]
+id = "kael-deny-git-push"
+decision = "forbidden"
+justification = "Kael implementation runs stop at handoff/report. Publishing requires the project's approved release or PR workflow."
+command = ["git", "push"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-merge"
+decision = "forbidden"
+justification = "Kael builders must not merge branches. Merge only through the project's approved workflow after user review."
+command = ["git", "merge"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-reset-hard"
+decision = "forbidden"
+justification = "Destructive resets can discard user work. Kael must preserve existing changes and report conflicts."
+command = ["git", "reset", "--hard"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-checkout-path-restore"
+decision = "forbidden"
+justification = "Destructive path checkout can discard user work. Use explicit reviewed edits instead."
+command = ["git", "checkout", "--"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-clean"
+decision = "forbidden"
+justification = "git clean can delete untracked user files. Kael must not remove untracked work during implementation."
+command = ["git", "clean"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-gh-pr-create"
+decision = "forbidden"
+justification = "Kael stops at implementation handoff. PR creation belongs to the project's approved publish workflow."
+command = ["gh", "pr", "create"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-gh-pr-edit"
+decision = "forbidden"
+justification = "Kael must not mutate PR metadata during implementation. Use the project's approved PR workflow."
+command = ["gh", "pr", "edit"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-gh-pr-merge"
+decision = "forbidden"
+justification = "Kael must not merge PRs. Merge only after explicit user approval through the approved workflow."
+command = ["gh", "pr", "merge"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-gh-pr-close"
+decision = "forbidden"
+justification = "Kael must not close PRs during implementation. PR lifecycle changes require explicit workflow approval."
+command = ["gh", "pr", "close"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-npm-publish"
+decision = "forbidden"
+justification = "Package publishing is outside Kael implementation runs and must use the project's release workflow."
+command = ["npm", "publish"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-pnpm-publish"
+decision = "forbidden"
+justification = "Package publishing is outside Kael implementation runs and must use the project's release workflow."
+command = ["pnpm", "publish"]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-yarn-npm-publish"
+decision = "forbidden"
+justification = "Package publishing is outside Kael implementation runs and must use the project's release workflow."
+command = ["yarn", "npm", "publish"]
+append_wildcard = true

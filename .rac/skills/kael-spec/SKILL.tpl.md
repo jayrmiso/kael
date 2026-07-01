@@ -1,8 +1,8 @@
 +++
-description = "Plan-first Kael Spec workflow: compact mandatory planning, one senior TDD builder, and concrete handoff after implementation."
+description = "Plan-first Kael Spec workflow: compact mandatory planning, one senior TDD builder, enforced guardrails, concrete handoff, and final implementation report."
 
 [vendor.claude.frontmatter]
-version = "0.2.0"
+version = "0.3.0"
 +++
 
 Run the Kael Spec workflow.
@@ -27,7 +27,8 @@ planning:
 - one strong implementation worker: `kael-builder`
 - compact milestone planning
 - TDD / Prove-It expectations for behavior changes
-- orchestrator-owned review and handoff
+- orchestrator-owned review, handoff, and final implementation report
+- RAC command guardrails installed on top of project rules
 - no default explorer, reviewer, debugger, or extra tech-lead agent
 
 ## Required Agent
@@ -77,7 +78,7 @@ Implementation mode.
 3. Re-state the approved milestones briefly.
 4. Invoke exactly one `kael-builder` with the full approved plan.
 5. Inspect the builder result and scoped diff enough to verify the handoff.
-6. Produce the final handoff card.
+6. Produce the final handoff card and final implementation report.
 
 ## Plan Mode
 
@@ -156,9 +157,10 @@ store workflow notes, write or update `.kael/handoff.md` with the same content.
 If writing that file would be inappropriate for the project, include the handoff
 only in the final response and say so.
 
-Final handoff format:
+The handoff is for the user to test the result:
 
 ```text
+## Handoff
 Status: Ready for user test | Blocked | Needs follow-up
 Plan:
 Milestones completed:
@@ -173,6 +175,50 @@ Next:
 `Manual checks` must be specific to the change. Do not write generic advice like
 "test the app".
 
+## Final Implementation Report
+
+Every implementation run must also end with a final implementation report. The
+report is the durable engineering summary of what was built and why it is ready.
+
+Use this format:
+
+```text
+## Final Implementation Report
+Status:
+Plan reference:
+Milestones:
+Implementation map:
+API / interface shape:
+Data / state / migration notes:
+Tests / verification:
+TDD / Prove-It evidence:
+Orchestrator review:
+Known risks:
+Follow-ups:
+```
+
+Use `none` only when a section truly does not apply. Keep the report concise,
+but include enough concrete detail that another developer can understand the
+implementation without reading the full chat.
+
+## Enforced Rules
+
+Kael includes RAC command rules. When installed with `--kind rule`, these rules
+are added on top of the target project's existing RAC rules.
+
+The rules enforce Kael's no-publish/no-destructive-action contract:
+
+- no direct `git push`
+- no direct `git merge`
+- no `git reset --hard`
+- no destructive `git checkout -- ...`
+- no direct `git clean`
+- no `gh pr create`, `gh pr edit`, `gh pr merge`, or `gh pr close`
+- no package publishing commands
+
+If the user explicitly wants to publish, merge, or release, that should happen
+outside `/kael-spec` through the project's approved release workflow.
+
 ## Token Discipline
 
 - Plan first, but keep the plan short.
@@ -182,4 +228,3 @@ Next:
 - Prefer targeted checks before full suites unless the changed contract is
   broad.
 - Keep final handoff concise and actionable.
-
