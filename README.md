@@ -12,6 +12,8 @@ small:
 - protected non-main implementation branch/worktree
 - conventional commit messages for completed implementation scopes
 - runtime or smoke handoff from the implementation worktree
+- optional PR publication from the implementation worktree when explicitly
+  requested
 - compact milestones
 - one or more senior builder workers for independent, non-overlapping code
   milestones
@@ -27,7 +29,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.6
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.7
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -67,14 +69,15 @@ Kael always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
+| Optional PR | `/kael-impl` | branch push and PR URL only when explicitly requested |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 ## Rules
 
 Install with `--kind rule` to layer Kael guardrails on top of existing project
-RAC rules. Kael rules forbid direct push, merge, destructive git cleanup/reset,
-switching/checking out `main` or `master`, PR mutation/merge, and package
-publishing during implementation runs.
+RAC rules. Kael rules forbid direct pushes to `main`/`master`, merge,
+destructive git cleanup/reset, switching/checking out `main` or `master`, PR
+merge/close, and package publishing during implementation runs.
 
 `/kael-impl` may delegate to multiple `kael-builder` agents only when approved
 milestones are independent and file/surface ownership does not overlap. The
@@ -94,6 +97,11 @@ API, UI, or CLI from the implementation worktree when a runnable surface exists.
 The existing handoff fields stay intact; Kael appends the worktree path, start
 command, URL or smoke target, verification command, runtime status, and a
 specific checklist of what you should test.
+
+By default, `/kael-impl` stops at a committed, PR-ready branch like Zuggie. If
+you explicitly ask it to open a PR, it may push only the implementation branch
+from the worktree and create a PR. It must not approve the PR, merge it, or
+update local main.
 
 ## Source Of Truth
 
@@ -121,14 +129,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.6
+git tag v0.1.7
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.6`, then use:
+Create a GitHub release for `v0.1.7`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.6
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.7
 ```
 
 ## License

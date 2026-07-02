@@ -1,8 +1,15 @@
 [[rule]]
-id = "kael-deny-git-push"
+id = "kael-deny-git-push-main-master"
 decision = "forbidden"
-justification = "Kael implementation runs stop at handoff/report. Publishing requires the project's approved release or PR workflow."
-command = ["git", "push"]
+justification = "Kael may publish implementation branches, but must never push directly to protected branches."
+command = ["git", "push", "origin", ["main", "master"]]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-push-head-to-main-master"
+decision = "forbidden"
+justification = "Kael may publish implementation branches, but must never push HEAD directly to protected branches."
+command = ["git", "push", "origin", ["HEAD:main", "HEAD:master"]]
 append_wildcard = true
 
 [[rule]]
@@ -45,20 +52,6 @@ id = "kael-deny-git-clean"
 decision = "forbidden"
 justification = "git clean can delete untracked user files. Kael must not remove untracked work during implementation."
 command = ["git", "clean"]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-gh-pr-create"
-decision = "forbidden"
-justification = "Kael stops at implementation handoff. PR creation belongs to the project's approved publish workflow."
-command = ["gh", "pr", "create"]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-gh-pr-edit"
-decision = "forbidden"
-justification = "Kael must not mutate PR metadata during implementation. Use the project's approved PR workflow."
-command = ["gh", "pr", "edit"]
 append_wildcard = true
 
 [[rule]]
