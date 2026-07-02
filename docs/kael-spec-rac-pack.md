@@ -6,6 +6,7 @@ It borrows the useful parts of Stride and Zuggie while keeping the runtime shape
 small:
 
 - mandatory compact plan mode
+- separate `/kael-spec` and `/kael-impl` commands
 - compact milestones
 - one senior implementation worker
 - TDD / Prove-It rules for behavior changes
@@ -21,7 +22,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.1
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.2
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -37,6 +38,7 @@ npx @raniejade/rac install --targets codex --kind agent,skill,rule
 Generated files:
 
 - Codex skill: `.agents/skills/kael-spec/SKILL.md`
+- Codex skill: `.agents/skills/kael-impl/SKILL.md`
 - Codex agent: `.codex/agents/kael-builder.toml`
 - Codex rules: `.codex/rules/kael-guardrails.rules`
 - Claude skill and agents under `.claude/`
@@ -45,8 +47,7 @@ Generated files:
 
 ```text
 /kael-spec fix the broken empty state copy
-/kael-spec plan add usage limits to the billing API
-/kael-spec implement the accepted milestone plan
+/kael-impl the approved Kael Spec plan
 ```
 
 ## Workflow
@@ -55,18 +56,17 @@ Kael Spec always plans before code:
 
 | Step | Owner | Output |
 | --- | --- | --- |
-| Plan | `/kael-spec` orchestrator | compact spec and milestones |
+| Plan | `/kael-spec` | compact spec and milestones |
 | Approval | user | explicit approval to implement |
-| Build | `kael-builder` | code, tests, self-review |
-| Handoff | `/kael-spec` orchestrator | status, changed files, tests, manual checks, next step |
-| Final report | `/kael-spec` orchestrator | implementation map, interfaces, verification, risks, follow-ups |
+| Build | `/kael-impl` + `kael-builder` | code, tests, self-review |
+| Handoff | `/kael-impl` | status, changed files, tests, manual checks, next step |
+| Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 Default command behavior:
 
 - `/kael-spec <task>` produces a plan and stops.
-- `/kael-spec plan <task>` produces a plan and stops.
-- `/kael-spec implement <accepted plan>` invokes one `kael-builder` and ends
-  with a handoff plus final implementation report.
+- `/kael-impl <accepted plan>` invokes one `kael-builder` and ends with a
+  handoff plus final implementation report.
 
 ## Rules
 
@@ -84,14 +84,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.1
+git tag v0.1.2
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.1`, then install it in target projects:
+Create a GitHub release for `v0.1.2`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.1
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.2
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 
