@@ -28,13 +28,17 @@ small:
 From the target project:
 
 ```bash
-npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.7
+npx @raniejade/rac init --empty
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.8
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
 Use the latest published Kael release tag in `--ref`. Avoid installing from
 `main` for normal projects; release tags keep installs reproducible.
+
+Use `rac init --empty` for a Kael-only setup. The default `rac init` starter
+pack adds project wrapper rules that deny raw `git push`; keep those only when
+your project also provides the approved push/PR wrapper commands.
 
 For Codex only:
 
@@ -116,14 +120,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.7
+git tag v0.1.8
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.7`, then install it in target projects:
+Create a GitHub release for `v0.1.8`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.7
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.8
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

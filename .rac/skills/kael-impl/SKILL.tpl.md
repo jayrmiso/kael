@@ -2,7 +2,7 @@
 description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, worktree runtime handoff, optional PR publication, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.7"
+version = "0.1.8"
 +++
 
 Implement an approved Kael Spec plan.
@@ -307,6 +307,10 @@ Rules:
 - If the project documents a PR wrapper such as `mise push-branch` or
   `mise create-pr`, use that wrapper instead of raw `git push` or
   `gh pr create`.
+- Before using raw `git push`, check for local project RAC rules or docs that
+  forbid it. If a project rule such as `.rac/rules/wrapper-deny.toml` blocks
+  raw push and no wrapper exists, mark PR publication blocked and report that
+  project-level rule as the blocker.
 - Otherwise, publish with commands shaped like:
 
 ```bash
