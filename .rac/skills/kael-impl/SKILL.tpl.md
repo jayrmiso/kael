@@ -1,8 +1,8 @@
 +++
-description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, handoff, and final report."
+description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, worktree runtime handoff, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.5"
+version = "0.1.6"
 +++
 
 Implement an approved Kael Spec plan.
@@ -49,6 +49,11 @@ outputs.
   worktree.
 - Never accept builder output that lacks a conventional commit for completed
   implementation work.
+- Never mark the handoff `Ready for user test` for a runnable app, service,
+  API, UI, or CLI until the runtime or smoke-test handoff has run from the
+  selected implementation worktree/check-out path.
+- Never run the app preview, service, or smoke command from `main`, `master`, or
+  the repository default branch.
 - Preserve unrelated user changes.
 
 ## Approved Plan Gate
@@ -152,7 +157,9 @@ After builders finish, reject or repair the implementation when:
 9. If there is a real blocker, invoke `kael-builder` once more with only the
    blocking findings and an exclusive repair scope. Do not start an open-ended
    repair loop.
-10. Produce both `## Handoff` and `## Final Implementation Report`.
+10. Run the Runtime / Preview Handoff Gate from the selected implementation
+    checkout.
+11. Produce both `## Handoff` and `## Final Implementation Report`.
 
 ## Delegation Rules
 
@@ -194,6 +201,8 @@ When spawning `kael-builder`, pass:
   adding unnecessary layers
 - instruction to create or update folders/modules when the approved architecture
   layout requires them
+- instruction to report any known runtime, preview, or smoke-test command that
+  the orchestrator should use for handoff
 
 Use the smallest number of builder invocations that keeps scope clear. Builders
 implement their assigned milestones and report milestone completion.
@@ -240,6 +249,42 @@ After the builder returns, perform a lightweight orchestrator review:
 - inspect risky diffs directly when public behavior, data, auth, persistence, or
   deployment changed
 
+## Runtime / Preview Handoff Gate
+
+Before final handoff, run the changed app, service, API, UI, or CLI from the
+selected implementation worktree/check-out path when the repository has a
+reasonable runtime or smoke command.
+
+Rules:
+
+- Use only the selected non-protected implementation branch and worktree/check-out
+  path. Record the exact path in the handoff.
+- Discover the start command from the project itself: package scripts, README,
+  compose files, framework defaults, or the builder's reported runtime hints.
+  Prefer the smallest command that exercises the changed surface.
+- For HTTP apps or services, start the process from the worktree, wait until the
+  server is ready, then verify it with `curl`, a health endpoint, a browser
+  check, or another concrete smoke command.
+- Keep the app running for user testing when the environment supports a durable
+  long-running session. If the environment cannot keep the process alive after
+  handoff, say that clearly and provide the exact restart command.
+- For CLI, library, worker, or non-HTTP changes, run the strongest targeted
+  smoke command instead and set `URL` to `none`.
+- If required env vars, services, seed data, ports, or dependencies are missing,
+  do not fake readiness. Mark the handoff `Blocked` or `Needs follow-up`, list
+  the exact missing items, and provide the next command the user should run.
+- If no runnable surface exists, state `Runtime: not applicable` and explain the
+  reason briefly.
+
+The runtime handoff must identify:
+
+- worktree/check-out path used to start or smoke-test
+- start command or smoke command
+- URL, port, health endpoint, or `none`
+- verification command and observed result
+- runtime status: running, stopped after smoke, not applicable, or blocked
+- specific things the user should test next
+
 ## Handoff
 
 Every implementation run must end with a concrete handoff. If the repository can
@@ -262,10 +307,21 @@ TDD / Prove-It:
 Manual checks:
 Risks:
 Next:
+
+Runtime / preview:
+  Worktree path:
+  Start command:
+  URL:
+  Health / smoke:
+  Verification command:
+  Runtime status:
+What to test:
 ```
 
-`Manual checks` must be specific to the change. Do not write generic advice like
-"test the app".
+Keep the original handoff fields intact. Append `Runtime / preview` and `What to
+test` after `Next`. `What to test` must be specific to the change. Name the
+actual screens, routes, API calls, commands, states, and negative paths the user
+should verify. Do not write generic advice like "test the app".
 
 ## Final Implementation Report
 
@@ -286,6 +342,7 @@ API / interface shape:
 Architecture / module layout:
 Data / state / migration notes:
 Tests / verification:
+Runtime / preview verification:
 TDD / Prove-It evidence:
 Orchestrator review:
 Known risks:

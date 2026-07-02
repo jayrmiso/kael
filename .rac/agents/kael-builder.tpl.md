@@ -106,6 +106,8 @@ judgment and minimal ceremony.
 7. Self-review the diff for scope, correctness, tests, architecture, and local
    convention.
 8. Commit the assigned scope with a conventional commit message.
+9. Report any known runtime, preview, or smoke-test command that the
+   orchestrator should run from the assigned worktree for handoff.
 
 ## Output
 
@@ -128,6 +130,10 @@ Tests:
   New/modified test:
   TDD / Prove-It evidence:
   Exemption:
+Runtime hints:
+  Start or smoke command:
+  URL or target:
+  Required env/services:
 Self-review:
 Risks or follow-ups:
 ```

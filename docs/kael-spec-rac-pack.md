@@ -10,6 +10,7 @@ small:
 - explicit architecture / module layout for multi-boundary work
 - protected non-main implementation branch/worktree
 - conventional commit messages for completed implementation scopes
+- runtime or smoke handoff from the implementation worktree
 - compact milestones
 - one or more senior implementation workers for independent, non-overlapping
   milestones
@@ -26,7 +27,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.5
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.6
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -63,7 +64,7 @@ Kael Spec always plans before code:
 | Plan | `/kael-spec` | compact spec and milestones |
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
-| Handoff | `/kael-impl` | status, changed files, tests, manual checks, next step |
+| Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 Default command behavior:
@@ -95,20 +96,26 @@ into flat files without a plan-aligned reason.
 before any builder writes. Completed builder scopes must be committed with a
 conventional commit subject such as `feat(auth): add user auth guard`.
 
+Before handoff, `/kael-impl` must start or smoke-test the changed app, service,
+API, UI, or CLI from the implementation worktree when a runnable surface exists.
+The existing handoff fields stay intact; Kael appends the worktree path, start
+command, URL or smoke target, verification command, runtime status, and a
+specific checklist of what you should test.
+
 ## Publishing A Release
 
 Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.5
+git tag v0.1.6
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.5`, then install it in target projects:
+Create a GitHub release for `v0.1.6`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.5
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.6
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 
