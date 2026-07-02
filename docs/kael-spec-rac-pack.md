@@ -7,6 +7,7 @@ small:
 
 - mandatory compact plan mode
 - separate `/kael-spec` and `/kael-impl` commands
+- explicit architecture / module layout for multi-boundary work
 - compact milestones
 - one or more senior implementation workers for independent, non-overlapping
   milestones
@@ -23,7 +24,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.3
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.4
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -84,20 +85,24 @@ milestones are independent and file/surface ownership does not overlap. The
 orchestrator must wait for every builder to finish before review, handoff, or
 final report.
 
+For multi-boundary work, `/kael-spec` must define an architecture/module layout
+and `/kael-impl` must reject implementations that collapse planned boundaries
+into flat files without a plan-aligned reason.
+
 ## Publishing A Release
 
 Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.3
+git tag v0.1.4
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.3`, then install it in target projects:
+Create a GitHub release for `v0.1.4`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.3
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.4
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

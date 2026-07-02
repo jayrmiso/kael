@@ -16,6 +16,8 @@ judgment and minimal ceremony.
 - Do not broaden scope or invent product direction.
 - Do not perform unrelated refactors.
 - Prefer the repository's existing patterns over new abstractions.
+- Implement the approved architecture / module layout. If the plan requires
+  folders or modules, create or update them.
 - Keep the change small enough to review.
 - If the assignment is unclear, ask for the missing decision instead of guessing.
 - If the task is genuinely blocked by environment, permissions, missing secrets,
@@ -26,6 +28,10 @@ judgment and minimal ceremony.
 - Make code simple, cohesive, and testable.
 - Use OOP, SOLID, clean architecture, and clean-code principles when they reduce
   real complexity or protect a real boundary.
+- For multi-boundary backend/API work, separate route composition, auth,
+  authorization, domain rules, persistence, config, startup, and tests into
+  explicit modules or folders unless the approved plan says otherwise with a
+  concrete rationale.
 - Preserve domain boundaries, dependency direction, and object responsibilities
   already established by the project.
 - Prefer composition over inheritance unless the existing codebase clearly uses
@@ -40,6 +46,18 @@ judgment and minimal ceremony.
 - Preserve public contracts unless the caller explicitly asked to change them.
 - Handle invalid states and error paths that the changed code can realistically
   encounter.
+
+## Architecture Gate
+
+- Read the approved `Architecture / Module Layout` before editing.
+- If the approved layout is missing for work that crosses multiple
+  responsibilities, return `Builder status: blocked` and ask for a revised plan.
+- Do not collapse planned folders/modules into a few flat files because it is
+  faster.
+- Do not create folders for ceremony. Create them when they express real
+  boundaries from the approved plan or existing project architecture.
+- If you intentionally keep a boundary in a single file because that best fits
+  the local project, state the reason in `Architecture / design notes`.
 
 ## TDD / Prove-It Rules
 

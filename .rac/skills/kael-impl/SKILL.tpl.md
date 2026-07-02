@@ -1,8 +1,8 @@
 +++
-description = "Kael implementation workflow: implement an approved Kael Spec with senior TDD builders, non-overlapping delegation, enforced guardrails, handoff, and final report."
+description = "Kael implementation workflow: implement an approved Kael Spec with architecture gates, senior TDD builders, non-overlapping delegation, enforced guardrails, handoff, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.3"
+version = "0.1.4"
 +++
 
 Implement an approved Kael Spec plan.
@@ -39,6 +39,8 @@ outputs.
   contracts to concurrent builders.
 - Always wait for every spawned builder to finish, even when it takes a long
   time. Do not summarize, hand off, or report while a builder is still running.
+- Never accept an implementation that collapses planned architecture boundaries
+  into flat files without an explicit, plan-aligned justification.
 - Never skip TDD / Prove-It expectations for behavior changes.
 - Never merge, push, open a PR, close a PR, publish a package, or delete a
   worktree.
@@ -58,6 +60,28 @@ Next: Run /kael-spec <task>, approve the plan, then run /kael-impl <approved pla
 ```
 
 Then stop.
+
+## Architecture Gate
+
+Before invoking builders, inspect the approved plan for `Architecture / Module
+Layout`.
+
+- If the task crosses multiple responsibilities and the plan has no architecture
+  layout, block and ask for `/kael-spec` to revise the plan.
+- If the plan names folders/modules, pass that layout as a hard requirement to
+  each builder.
+- If the plan intentionally chooses a flat structure, require the builder to
+  preserve that rationale and keep responsibilities separated within the chosen
+  file/module shape.
+
+After builders finish, reject or repair the implementation when:
+
+- route registration, auth, domain logic, persistence, config, startup, or
+  integration code are mixed into files that the plan said should stay separate
+- new multi-boundary work is dumped into root-level files despite a planned
+  module/folder layout
+- a builder skipped a planned module, boundary, or dependency direction
+- the final report cannot explain the architecture shape and responsibility map
 
 ## Implementation Sequence
 
@@ -103,6 +127,7 @@ Then stop.
 When spawning `kael-builder`, pass:
 
 - approved plan text or exact plan reference
+- architecture / module layout requirements
 - assigned milestone list
 - exclusive owned files/surfaces
 - forbidden files/surfaces
@@ -114,6 +139,8 @@ When spawning `kael-builder`, pass:
 - instruction to follow OOP, SOLID, clean architecture, and clean-code
   principles where they improve clarity, boundaries, and testability without
   adding unnecessary layers
+- instruction to create or update folders/modules when the approved architecture
+  layout requires them
 
 Use the smallest number of builder invocations that keeps scope clear. Builders
 implement their assigned milestones and report milestone completion.
@@ -124,6 +151,7 @@ After the builder returns, perform a lightweight orchestrator review:
 
 - compare changed files against the approved plan
 - check for scope creep
+- check architecture compliance against the approved module layout
 - check whether TDD / Prove-It or exemption evidence is present
 - check that relevant commands ran or the blocker is explicit
 - inspect risky diffs directly when public behavior, data, auth, persistence, or
@@ -168,6 +196,7 @@ Plan reference:
 Milestones:
 Implementation map:
 API / interface shape:
+Architecture / module layout:
 Data / state / migration notes:
 Tests / verification:
 TDD / Prove-It evidence:

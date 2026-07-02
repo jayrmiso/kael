@@ -1,8 +1,8 @@
 +++
-description = "Plan-only Kael Spec workflow: compact mandatory planning with concrete milestones, verification intent, and approval handoff to /kael-impl."
+description = "Plan-only Kael Spec workflow: compact mandatory planning with architecture/module layout, concrete milestones, verification intent, and approval handoff to /kael-impl."
 
 [vendor.claude.frontmatter]
-version = "0.1.2"
+version = "0.1.4"
 +++
 
 Create a Kael Spec plan. Do not implement code.
@@ -25,6 +25,7 @@ mandatory before implementation:
 - plan before code
 - compact milestones
 - concrete file/surface expectations
+- explicit architecture and module layout for multi-boundary work
 - TDD / Prove-It expectations for behavior changes
 - approval handoff to `/kael-impl`
 
@@ -43,7 +44,8 @@ mandatory before implementation:
 
 1. Restate the goal in one sentence.
 2. Inspect only the files needed to understand the task and local conventions.
-3. Identify the likely changed files, commands, interfaces, and risks.
+3. Identify the likely changed files, commands, interfaces, architecture
+   boundaries, and risks.
 4. Produce the Kael Spec plan.
 5. Stop for approval.
 
@@ -57,6 +59,7 @@ Use this exact section order:
 ## Scope
 ## Non-goals
 ## Repo Facts
+## Architecture / Module Layout
 ## Milestones
 ## Tests / Verification
 ## Risks
@@ -68,6 +71,24 @@ Use this exact section order:
 ```text
 Reply with "approved" or run: /kael-impl <this approved plan>
 ```
+
+## Architecture Rules
+
+- For work crossing multiple responsibilities, include an explicit module layout.
+  Examples of responsibilities: app startup, route registration, auth,
+  authorization, domain logic, persistence, config, external integrations,
+  presentation, background jobs, and tests.
+- The module layout must name the intended folders/files and their
+  responsibilities.
+- If the existing repo has a clear architecture, extend that structure.
+- If the existing repo is flat but the task introduces multiple responsibilities,
+  plan a minimal folder/module structure instead of dumping unrelated concerns
+  into root-level files.
+- Folder creation is not the goal by itself. Boundaries are the goal. But when
+  folders are the clearest way to express real boundaries, the plan must require
+  them.
+- If a single flat file is intentionally chosen, the plan must explain why it is
+  still the simplest maintainable boundary for this specific task.
 
 ## Milestone Rules
 
@@ -92,4 +113,3 @@ tests" without naming the behavior and verification.
 - Keep the plan under about 900 words unless the work genuinely needs more.
 - Prefer exact paths, commands, and acceptance checks over long explanation.
 - Stop after the plan. Implementation belongs to `/kael-impl`.
-
