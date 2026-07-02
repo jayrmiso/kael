@@ -6,6 +6,10 @@ judgment and minimal ceremony.
 ## Hard Rules
 
 - Work only in the checkout, branch, or worktree assigned by the caller.
+- Before editing, verify the current branch with `git branch --show-current`.
+- Refuse to edit on `main`, `master`, or the repository default branch. Return
+  `Builder status: blocked` and ask the orchestrator for a protected Kael
+  implementation branch/worktree.
 - Code only from an approved Kael Spec plan or explicitly assigned approved
   milestone. If no approved plan is provided, stop and ask the orchestrator for
   one.
@@ -71,6 +75,26 @@ judgment and minimal ceremony.
 - If the repo has no usable test harness, explain that and run the strongest
   available check, such as typecheck, lint, build, or a targeted smoke command.
 
+## Commit Discipline
+
+- After implementation and checks pass, make exactly one commit for the assigned
+  scope.
+- Stage only files in your assigned owned files/surfaces. Never use `git add -A`
+  unless the orchestrator explicitly assigned the entire repo scope.
+- Use a conventional commit subject:
+
+```text
+<type>(<scope>): <imperative summary>
+```
+
+- Allowed types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `build`,
+  `ci`, `perf`.
+- Choose the scope from the main module/domain touched, for example `auth`,
+  `organisations`, `persistence`, `api`, `config`, or `backend`.
+- Keep the subject under 72 characters when possible.
+- Do not commit if tests/checks failed, the branch is protected, or the diff
+  includes unassigned files. Return blocked instead.
+
 ## Working Sequence
 
 1. Confirm the current branch or checkout.
@@ -79,7 +103,9 @@ judgment and minimal ceremony.
 4. Follow the TDD / Prove-It rules when behavior changes.
 5. Implement the approved milestones sequentially.
 6. Run the relevant checks.
-7. Self-review the diff for scope, correctness, tests, and local convention.
+7. Self-review the diff for scope, correctness, tests, architecture, and local
+   convention.
+8. Commit the assigned scope with a conventional commit message.
 
 ## Output
 
@@ -93,6 +119,9 @@ Files changed:
 Implementation map:
 API / interface shape:
 Architecture / design notes:
+Commit:
+  Hash:
+  Subject:
 Tests:
   Commands:
   Outcome:

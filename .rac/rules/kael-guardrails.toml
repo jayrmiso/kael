@@ -13,6 +13,20 @@ command = ["git", "merge"]
 append_wildcard = true
 
 [[rule]]
+id = "kael-deny-git-switch-main-master"
+decision = "forbidden"
+justification = "Kael implementation must not switch back to protected branches during write work."
+command = ["git", "switch", ["main", "master"]]
+append_wildcard = true
+
+[[rule]]
+id = "kael-deny-git-checkout-main-master"
+decision = "forbidden"
+justification = "Kael implementation must not check out protected branches during write work."
+command = ["git", "checkout", ["main", "master"]]
+append_wildcard = true
+
+[[rule]]
 id = "kael-deny-git-reset-hard"
 decision = "forbidden"
 justification = "Destructive resets can discard user work. Kael must preserve existing changes and report conflicts."

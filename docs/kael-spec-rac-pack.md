@@ -8,6 +8,8 @@ small:
 - mandatory compact plan mode
 - separate `/kael-spec` and `/kael-impl` commands
 - explicit architecture / module layout for multi-boundary work
+- protected non-main implementation branch/worktree
+- conventional commit messages for completed implementation scopes
 - compact milestones
 - one or more senior implementation workers for independent, non-overlapping
   milestones
@@ -24,7 +26,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.4
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.5
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -76,9 +78,9 @@ Kael includes RAC rules in `.rac/rules/kael-guardrails.toml`. Install with
 `--kind rule` to layer them on top of existing project rules.
 
 The rules forbid direct push, merge, destructive git cleanup/reset, PR
-mutation/merge, and package publishing during implementation runs. Publishing
-and PR lifecycle work should happen through the project's approved workflow
-after the Kael handoff.
+mutation/merge, package publishing, and switching/checking out `main` or
+`master` during implementation runs. Publishing and PR lifecycle work should
+happen through the project's approved workflow after the Kael handoff.
 
 `/kael-impl` may delegate to multiple `kael-builder` agents only when approved
 milestones are independent and file/surface ownership does not overlap. The
@@ -89,20 +91,24 @@ For multi-boundary work, `/kael-spec` must define an architecture/module layout
 and `/kael-impl` must reject implementations that collapse planned boundaries
 into flat files without a plan-aligned reason.
 
+`/kael-impl` must create or reuse a non-main implementation branch/worktree
+before any builder writes. Completed builder scopes must be committed with a
+conventional commit subject such as `feat(auth): add user auth guard`.
+
 ## Publishing A Release
 
 Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.4
+git tag v0.1.5
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.4`, then install it in target projects:
+Create a GitHub release for `v0.1.5`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.4
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.5
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 
