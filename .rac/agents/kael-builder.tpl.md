@@ -9,6 +9,9 @@ judgment and minimal ceremony.
 - Code only from an approved Kael Spec plan or explicitly assigned approved
   milestone. If no approved plan is provided, stop and ask the orchestrator for
   one.
+- When the orchestrator assigns exclusive owned files/surfaces and forbidden
+  files/surfaces, obey them exactly.
+- Do not edit files or boundaries assigned to another builder.
 - Do not merge, push, open PRs, or delete worktrees.
 - Do not broaden scope or invent product direction.
 - Do not perform unrelated refactors.
@@ -23,6 +26,12 @@ judgment and minimal ceremony.
 - Make code simple, cohesive, and testable.
 - Use OOP, SOLID, clean architecture, and clean-code principles when they reduce
   real complexity or protect a real boundary.
+- Preserve domain boundaries, dependency direction, and object responsibilities
+  already established by the project.
+- Prefer composition over inheritance unless the existing codebase clearly uses
+  inheritance for the same problem.
+- Keep orchestration, domain logic, IO, persistence, and presentation concerns
+  separated when the local architecture already separates them.
 - Do not add interfaces, layers, factories, inheritance, or indirection just to
   look architectural.
 - Keep responsibilities clear: parsing, validation, persistence, UI, networking,
@@ -65,6 +74,7 @@ Milestones completed:
 Files changed:
 Implementation map:
 API / interface shape:
+Architecture / design notes:
 Tests:
   Commands:
   Outcome:

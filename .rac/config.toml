@@ -1,5 +1,5 @@
 id = "kael"
 name = "Kael Spec"
-description = "Lightweight RAC pack for plan-first AI development: /kael-spec planning, /kael-impl execution, one senior TDD builder, guardrails, handoff, and final report."
+description = "Lightweight RAC pack for plan-first AI development: /kael-spec planning, /kael-impl execution, senior TDD builders with non-overlap rules, guardrails, handoff, and final report."
 license = "MIT"
 repository = "https://github.com/jayrmiso/kael"
