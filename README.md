@@ -29,7 +29,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.8
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.9
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -102,6 +102,10 @@ The existing handoff fields stay intact; Kael appends the worktree path, start
 command, URL or smoke target, verification command, runtime status, and a
 specific checklist of what you should test.
 
+The final response must still show the full handoff block. Writing
+`.kael/handoff.md` is a copy of that handoff, not a substitute for displaying
+it.
+
 By default, `/kael-impl` stops at a committed, PR-ready branch like Zuggie. If
 you explicitly ask it to open a PR, it may push only the implementation branch
 from the worktree and create a PR. It must not approve the PR, merge it, or
@@ -133,14 +137,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.8
+git tag v0.1.9
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.8`, then use:
+Create a GitHub release for `v0.1.9`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.8
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.9
 ```
 
 ## License

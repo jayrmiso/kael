@@ -2,7 +2,7 @@
 description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, worktree runtime handoff, optional PR publication, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.8"
+version = "0.1.9"
 +++
 
 Implement an approved Kael Spec plan.
@@ -331,6 +331,10 @@ Every implementation run must end with a concrete handoff. If the repository can
 store workflow notes, write or update `.kael/handoff.md` with the same content.
 If writing that file would be inappropriate for the project, include the handoff
 only in the final response and say so.
+
+Always include the full `## Handoff` block in the final response. Treat
+`.kael/handoff.md` as a stored copy of the same content, not a replacement for
+the visible handoff.
 
 The handoff is for the user to test the result:
 
