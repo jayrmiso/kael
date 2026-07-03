@@ -51,6 +51,27 @@ fi
 
 if [[ -n "$(git status --porcelain -- .kael/handoff.md)" ]]; then
   git add .kael/handoff.md
+fi
+
+worktree_artifact_paths=()
+while IFS= read -r status_line; do
+  [[ -z "$status_line" ]] && continue
+  status_code="${status_line:0:2}"
+  path="${status_line:3}"
+  [[ "$path" == \"*\" ]] && path="${path#\"}" && path="${path%\"}"
+  if [[ "$status_code" == " D" || "$status_code" == "D " || "$status_code" == "D" ]]; then
+    mode="$(git ls-files --stage -- "$path" | awk '{print $1}')"
+    if [[ "$mode" == "160000" ]]; then
+      worktree_artifact_paths+=("$path")
+    fi
+  fi
+done < <(git status --porcelain -- .kael/worktrees)
+
+if [[ "${#worktree_artifact_paths[@]}" -gt 0 ]]; then
+  git add -u -- "${worktree_artifact_paths[@]}"
+fi
+
+if ! git diff --cached --quiet -- .kael/handoff.md .kael/worktrees; then
   git commit -m "docs(kael): update implementation handoff"
 fi
 

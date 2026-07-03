@@ -34,7 +34,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.22
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.23
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -127,7 +127,9 @@ uses `.agents/skills/kael-merge/bin/kael-merge-pr.sh`. These are intentionally
 the approved wrapper commands for projects that keep RAC starter rules denying
 raw push and direct `gh pr merge`. The publish wrapper commits dirty
 `.kael/handoff.md`, pushes the current feature branch, and creates the PR from
-that pushed branch.
+that pushed branch. If an old tracked `.kael/worktrees/*` gitlink shows as
+deleted, the wrapper removes that Kael artifact from the branch instead of
+blocking publication.
 
 `/kael-impl` stops at a committed, PR-ready branch like Zuggie. It never opens a
 PR. Use `/kael-publish` for PR creation and `/kael-merge` for merging.
@@ -138,14 +140,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.22
+git tag v0.1.23
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.22`, then install it in target projects:
+Create a GitHub release for `v0.1.23`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.22
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.23
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

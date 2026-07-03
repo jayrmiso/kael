@@ -40,14 +40,18 @@ files.
 - Preserve the implementation handoff content.
 - If `.kael/handoff.md` is dirty, the wrapper must commit it before pushing so
   the handoff is part of the PR branch.
+- If Git reports deleted tracked gitlinks under `.kael/worktrees/*`, let the
+  wrapper stage their removal as Kael bookkeeping. Do not block on those
+  artifacts.
 
 ## Publish Sequence
 
 1. Confirm the branch is not `main`, `master`, or the default branch.
 2. Build the PR title and body from the handoff.
 3. Write the PR body to a temp file.
-4. Commit any dirty `.kael/handoff.md`, push the current branch, and open the PR
-   with the installed wrapper:
+4. Commit any dirty `.kael/handoff.md`, clean tracked `.kael/worktrees/*`
+   gitlink artifacts, push the current branch, and open the PR with the
+   installed wrapper:
    `.agents/skills/kael-publish/bin/kael-publish-pr.sh <base-branch> "<title>" <body-file>`.
    If the target is Claude or OpenCode and that path does not exist, use the
    equivalent installed skill asset path under `.claude/skills/kael-publish/bin`
@@ -59,8 +63,8 @@ files.
 ## Cleanup Rules
 
 - Remove the worktree only after the PR URL is known.
-- If the worktree is dirty beyond `.kael/handoff.md`, stop and report blocked
-  publish/cleanup.
+- If the worktree is dirty beyond `.kael/handoff.md` and deleted tracked
+  `.kael/worktrees/*` gitlinks, stop and report blocked publish/cleanup.
 - If the branch should stay local for follow-up work, keep it and only remove the
   worktree.
 - If the project keeps local publish notes, do not leave them behind in the

@@ -83,6 +83,9 @@ Rules:
 - If the current checkout is on `main`, `master`, or the default branch, do not
   edit there. Create a branch named `kael/<task-slug>` and a worktree under
   `.kael/worktrees/<task-slug>` from the protected base branch.
+- Before creating a worktree under `.kael/worktrees`, ensure the selected
+  checkout excludes `.kael/worktrees/` from commits. Prefer `.git/info/exclude`
+  for this local-only ignore. Do not stage `.kael/worktrees/*`.
 - If the current checkout is already on a non-protected feature branch and the
   user clearly intends to use it, you may reuse it.
 - If a matching Kael worktree/branch already exists, verify it is the intended
@@ -229,6 +232,7 @@ Rules:
   `ci`, `perf`.
 - The scope should name the main module/domain touched.
 - Builders must stage only their assigned files/surfaces.
+- Builders must never stage `.kael/worktrees/*`.
 - If a builder cannot commit because relevant checks fail, the branch is
   protected, or unassigned files are present, treat that as blocked.
 - The orchestrator must collect and report every builder commit hash and
@@ -241,7 +245,7 @@ docs(kael): update implementation handoff
 ```
 
 - The handoff commit is allowed in addition to builder implementation commits.
-  It must include only `.kael/handoff.md`.
+  It must include only `.kael/handoff.md`; never include `.kael/worktrees/*`.
 
 ## Orchestrator Review
 
