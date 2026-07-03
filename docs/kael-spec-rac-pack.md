@@ -13,8 +13,7 @@ small:
 - manual test handoff from the implementation worktree
 - optional PR publication from the implementation worktree with `gh` when
   explicitly requested
-- PR merge workflow that merges the PR on GitHub, syncs local `main`, updates
-  changelog, and pushes `main`
+- PR merge workflow that merges the PR on GitHub and syncs local `main`
 - copied `.env.local` or `.env` into the worktree before runtime launch when
   present on the main checkout
 - explicit builder assignment maps in `/kael-spec` when multiple builders are
@@ -35,7 +34,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.17
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.18
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -78,7 +77,7 @@ Kael Spec always plans before code:
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended manual test command and what to test next |
 | Publish / cleanup | `/kael-publish` | push branch, `gh pr create`, PR URL, local worktree cleanup |
-| Merge / changelog | `/kael-merge` | merge PR on GitHub, sync `main`, append changelog, commit, push `main` |
+| Merge | `/kael-merge` | merge PR on GitHub and sync local `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 Default command behavior:
@@ -136,14 +135,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.17
+git tag v0.1.18
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.17`, then install it in target projects:
+Create a GitHub release for `v0.1.18`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.17
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.18
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

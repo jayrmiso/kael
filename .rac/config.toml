@@ -1,5 +1,5 @@
 id = "kael"
 name = "Kael Spec"
-description = "Lightweight RAC pack for plan-first AI development: /kael-spec planning, /kael-impl on protected branches/worktrees, /kael-publish PR publication and worktree cleanup with gh, /kael-merge PR inspection, changelog update, and merge to main with gh, senior TDD builders, conventional commits, manual test handoff, guardrails, and final report."
+description = "Lightweight RAC pack for plan-first AI development: /kael-spec planning, /kael-impl on protected branches/worktrees, /kael-publish PR publication and worktree cleanup with gh, /kael-merge PR inspection and merge to main with gh, senior TDD builders, conventional commits, manual test handoff, guardrails, and final report."
 license = "MIT"
 repository = "https://github.com/jayrmiso/kael"
