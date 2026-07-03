@@ -34,7 +34,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.14
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.15
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -150,14 +150,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.14
+git tag v0.1.15
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.14`, then use:
+Create a GitHub release for `v0.1.15`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.14
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.15
 ```
 
 ## License

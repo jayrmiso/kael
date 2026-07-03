@@ -1,5 +1,5 @@
 +++
-description = "Kael PR publication workflow: push a completed Kael implementation branch, open a normal PR with GitHub CLI, and clean up the local worktree afterward. Use when /kael-impl is complete and the user asks to open a PR, publish the branch, or clean up the finished worktree."
+description = "Kael PR publication workflow: create a normal PR from the current Kael implementation branch with GitHub CLI, let gh handle publishing the branch when needed, and clean up the local worktree afterward. Use when /kael-impl is complete and the user asks to open a PR, publish the branch, or clean up the finished worktree."
 
 [vendor.claude.frontmatter]
 version = "0.1.0"
@@ -27,19 +27,22 @@ implementation branch and worktree. Do not implement code.
   captured.
 - Never delete uncommitted user work.
 - Never create a draft PR.
-- Never bypass repo push rules. If the repo has an approved publish wrapper,
-  use it. Otherwise use `git push -u origin <branch>`, then create the PR.
+- Never bypass repo push rules. Use one `gh pr create` from the current branch
+  and let gh handle the publish prompt when the branch is not yet on a remote.
+- Do not search for wrapper commands or pre-publish the branch manually unless
+  `gh pr create` fails for an explicit repo-policy reason.
 - Preserve the implementation handoff and final report content.
 
 ## Publish Sequence
 
 1. Confirm the branch, worktree path, and base branch.
 2. Confirm `gh auth status` succeeds.
-3. Push the branch to the remote with the approved wrapper or `git push -u origin <branch>`.
-4. Open the PR with `gh pr create --base <base-branch> --head <branch> --title "<title>" --body "<body>"`.
-5. Capture the PR URL from the `gh` output.
-6. Clean up the local worktree after the PR exists.
-7. Delete the local feature branch only if it is safe and no longer needed.
+3. Build the PR title and body from the final implementation report and handoff.
+4. Open the PR from the current branch with `gh pr create --base <base-branch> --title "<title>" --body "<body>"`.
+5. If gh prompts where to push the branch, accept the repository remote.
+6. Capture the PR URL from the `gh` output.
+7. Clean up the local worktree after the PR exists.
+8. Delete the local feature branch only if it is safe and no longer needed.
 
 ## Cleanup Rules
 
@@ -64,10 +67,8 @@ PR:
   URL:
   Number:
 Publish:
-  Branch command:
-  Branch result:
-  PR command:
-  PR result:
+  Command:
+  Result:
 Cleanup:
   Worktree:
   Branch:
