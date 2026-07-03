@@ -16,7 +16,8 @@ Usage:
 ## Role
 
 You are the Kael publish-and-cleanup operator. Start from the finished
-implementation branch and worktree. Do not implement code.
+implementation branch and worktree. Do not implement code or inspect policy
+files.
 
 ## Hard Rules
 
@@ -31,30 +32,29 @@ implementation branch and worktree. Do not implement code.
   current branch; the wrapper is the approved path for committing handoff,
   pushing the feature branch, and opening the PR.
 - Do not run direct `git push`; the wrapper is the approved publish path.
-- Do not run direct `gh pr create` unless the installed wrapper file is missing.
+- Do not run direct `gh pr create`.
 - Do not manually pre-publish the branch outside the wrapper.
 - Do not create branch refs with the GitHub git refs API.
-- Do not search for wrapper commands; Kael ships its own wrapper at the
-  installed skill asset path.
-- Preserve the implementation handoff and final report content.
+- Do not search for wrapper commands or policy files; Kael ships its own wrapper
+  at the installed skill asset path.
+- Preserve the implementation handoff content.
 - If `.kael/handoff.md` is dirty, the wrapper must commit it before pushing so
   the handoff is part of the PR branch.
 
 ## Publish Sequence
 
-1. Confirm the branch, worktree path, and base branch.
-2. Confirm `gh auth status` succeeds.
-3. Build the PR title and body from the final implementation report and handoff.
-4. Write the PR body to a temp file.
-5. Commit any dirty `.kael/handoff.md`, push the current branch, and open the PR
+1. Confirm the branch is not `main`, `master`, or the default branch.
+2. Build the PR title and body from the handoff.
+3. Write the PR body to a temp file.
+4. Commit any dirty `.kael/handoff.md`, push the current branch, and open the PR
    with the installed wrapper:
    `.agents/skills/kael-publish/bin/kael-publish-pr.sh <base-branch> "<title>" <body-file>`.
    If the target is Claude or OpenCode and that path does not exist, use the
    equivalent installed skill asset path under `.claude/skills/kael-publish/bin`
    or `.opencode/skills/kael-publish/bin`.
-6. Capture the PR URL from the wrapper output.
-7. Clean up the local worktree after the PR exists.
-8. Delete the local feature branch only if it is safe and no longer needed.
+5. Capture the PR URL from the wrapper output.
+6. Clean up the local worktree after the PR exists.
+7. Delete the local feature branch only if it is safe and no longer needed.
 
 ## Cleanup Rules
 
