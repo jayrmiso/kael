@@ -20,13 +20,6 @@ command = ["git", "clean"]
 append_wildcard = true
 
 [[rule]]
-id = "kael-deny-gh-pr-merge"
-decision = "forbidden"
-justification = "Kael must not merge PRs. Merge only after explicit user approval through the approved workflow."
-command = ["gh", "pr", "merge"]
-append_wildcard = true
-
-[[rule]]
 id = "kael-deny-gh-pr-close"
 decision = "forbidden"
 justification = "Kael must not close PRs during implementation. PR lifecycle changes require explicit workflow approval."

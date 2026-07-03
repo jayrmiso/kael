@@ -14,7 +14,8 @@ small:
 - runtime or smoke handoff from the implementation worktree
 - optional PR publication from the implementation worktree with `gh` when
   explicitly requested
-- PR merge workflow with changelog update and direct push to `main` using `gh`
+- PR merge workflow that merges the PR on GitHub, syncs local `main`, updates
+  changelog, and pushes `main`
 - copied `.env.local` or `.env` into the worktree before runtime launch when
   present on the main checkout
 - explicit builder assignment maps in `/kael-spec` when multiple builders are
@@ -34,7 +35,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.15
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.16
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -79,7 +80,7 @@ Kael always plans before code:
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
 | Publish / cleanup | `/kael-publish` | push branch, `gh pr create`, PR URL, local worktree cleanup |
-| Merge / changelog | `/kael-merge` | merge PR to `main`, append changelog, commit, push `main` |
+| Merge / changelog | `/kael-merge` | merge PR on GitHub, sync `main`, append changelog, commit, push `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 ## Rules
@@ -150,14 +151,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.15
+git tag v0.1.16
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.15`, then use:
+Create a GitHub release for `v0.1.16`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.15
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.16
 ```
 
 ## License
