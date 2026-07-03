@@ -37,6 +37,13 @@ fi
 
 gh auth status >/dev/null
 
+exclude_file="$(git rev-parse --git-path info/exclude)"
+mkdir -p "$(dirname "$exclude_file")"
+touch "$exclude_file"
+if ! grep -qxF ".kael/worktrees/" "$exclude_file"; then
+  printf '\n.kael/worktrees/\n' >> "$exclude_file"
+fi
+
 current_branch="$(git branch --show-current)"
 if [[ -z "$current_branch" ]]; then
   echo "not on a named git branch" >&2
@@ -53,25 +60,16 @@ if [[ -n "$(git status --porcelain -- .kael/handoff.md)" ]]; then
   git add .kael/handoff.md
 fi
 
-worktree_artifact_paths=()
-while IFS= read -r status_line; do
-  [[ -z "$status_line" ]] && continue
-  status_code="${status_line:0:2}"
-  path="${status_line:3}"
-  [[ "$path" == \"*\" ]] && path="${path#\"}" && path="${path%\"}"
-  if [[ "$status_code" == " D" || "$status_code" == "D " || "$status_code" == "D" ]]; then
-    mode="$(git ls-files --stage -- "$path" | awk '{print $1}')"
-    if [[ "$mode" == "160000" ]]; then
-      worktree_artifact_paths+=("$path")
-    fi
-  fi
-done < <(git status --porcelain -- .kael/worktrees)
-
-if [[ "${#worktree_artifact_paths[@]}" -gt 0 ]]; then
-  git add -u -- "${worktree_artifact_paths[@]}"
+tracked_worktrees="$(git ls-files .kael/worktrees)"
+if [[ -n "$tracked_worktrees" ]]; then
+  echo "refusing to publish because Kael worktree paths are tracked:" >&2
+  echo "$tracked_worktrees" >&2
+  echo "Remove them from the branch/index first; .kael/worktrees/ is local runtime state and must not be part of commits." >&2
+  echo "Suggested repair: git rm --cached -r .kael/worktrees && git commit -m 'chore(kael): untrack worktree artifacts'" >&2
+  exit 2
 fi
 
-if ! git diff --cached --quiet -- .kael/handoff.md .kael/worktrees; then
+if ! git diff --cached --quiet -- .kael/handoff.md; then
   git commit -m "docs(kael): update implementation handoff"
 fi
 

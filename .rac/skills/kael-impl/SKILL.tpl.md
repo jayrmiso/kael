@@ -84,8 +84,12 @@ Rules:
   edit there. Create a branch named `kael/<task-slug>` and a worktree under
   `.kael/worktrees/<task-slug>` from the protected base branch.
 - Before creating a worktree under `.kael/worktrees`, ensure the selected
-  checkout excludes `.kael/worktrees/` from commits. Prefer `.git/info/exclude`
-  for this local-only ignore. Do not stage `.kael/worktrees/*`.
+  checkout excludes `.kael/worktrees/` from commits by appending that exact line
+  to `$(git rev-parse --git-path info/exclude)` if it is missing. Do not stage
+  `.kael/worktrees/*`.
+- If `.kael/worktrees/*` is already tracked, block and report that the tracked
+  worktree artifact must be removed from the branch/index before implementation
+  or publication continues.
 - If the current checkout is already on a non-protected feature branch and the
   user clearly intends to use it, you may reuse it.
 - If a matching Kael worktree/branch already exists, verify it is the intended
