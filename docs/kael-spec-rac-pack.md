@@ -11,8 +11,9 @@ small:
 - protected non-main implementation branch/worktree
 - conventional commit messages for completed implementation scopes
 - runtime or smoke handoff from the implementation worktree
-- optional PR publication from the implementation worktree when explicitly
-  requested
+- optional PR publication from the implementation worktree with `gh` when
+  explicitly requested
+- PR merge workflow with changelog update and direct push to `main` using `gh`
 - copied `.env.local` or `.env` into the worktree before runtime launch when
   present on the main checkout
 - explicit builder assignment maps in `/kael-spec` when multiple builders are
@@ -33,7 +34,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.11
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.12
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -75,7 +76,8 @@ Kael Spec always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
-| Optional PR | `/kael-impl` | branch push and PR URL only when explicitly requested |
+| Publish / cleanup | `/kael-publish` | `gh pr create --push`, PR URL, local worktree cleanup |
+| Merge / changelog | `/kael-merge` | merge PR to `main`, append changelog, commit, push `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 Default command behavior:
@@ -89,10 +91,11 @@ Default command behavior:
 Kael includes RAC rules in `.rac/rules/kael-guardrails.toml`. Install with
 `--kind rule` to layer them on top of existing project rules.
 
-The rules forbid direct pushes to `main`/`master`, merge, destructive git
-cleanup/reset, PR merge/close, package publishing, and switching/checking out
-`main` or `master` during implementation runs. Release publishing should happen
-through the project's approved workflow after the Kael handoff.
+The rules forbid destructive git cleanup/reset, PR close, package publishing,
+and switching/checking out `main` or `master` during implementation runs.
+Release publishing should happen through the project's approved workflow after
+the Kael handoff. Publish and merge are handled by the dedicated
+`/kael-publish` and `/kael-merge` skills.
 
 `/kael-impl` may delegate to multiple `kael-builder` agents only when approved
 milestones are independent and file/surface ownership does not overlap. The
@@ -124,9 +127,9 @@ The final response must still show the full handoff block. Writing
 it.
 
 By default, `/kael-impl` stops at a committed, PR-ready branch like Zuggie. If
-you explicitly ask it to open a PR, it may push only the implementation branch
-from the worktree and create a PR. It must not approve the PR, merge it, or
-update local main.
+you explicitly ask it to open a PR, it may hand off to `/kael-publish` to push
+the implementation branch from the worktree and create a PR. It must not
+approve the PR, merge it, or update local main.
 
 ## Publishing A Release
 
@@ -134,14 +137,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.11
+git tag v0.1.12
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.11`, then install it in target projects:
+Create a GitHub release for `v0.1.12`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.11
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.12
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

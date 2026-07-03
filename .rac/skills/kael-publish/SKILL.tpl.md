@@ -1,0 +1,77 @@
++++
+description = "Kael PR publication workflow: publish a completed Kael implementation branch as a normal PR from the selected worktree using GitHub CLI, then clean up the local worktree afterward. Use when /kael-impl is complete and the user asks to open a PR, publish the branch, or clean up the finished worktree."
+
+[vendor.claude.frontmatter]
+version = "0.1.0"
++++
+
+Publish a completed Kael implementation branch.
+
+Usage:
+
+```text
+/kael-publish <implementation branch or worktree>
+```
+
+## Role
+
+You are the Kael publish-and-cleanup operator. Start from the finished
+implementation branch and worktree. Do not implement code.
+
+## Hard Rules
+
+- Never run on `main`, `master`, or the default branch.
+- Require `gh` CLI to be installed and authenticated before publishing.
+- Never approve, merge, or close your own PR.
+- Never delete the worktree before the branch is published and the PR URL is
+  captured.
+- Never delete uncommitted user work.
+- Never create a draft PR.
+- Never bypass repo push rules. Use `gh pr create --push` when the branch needs
+  to be published. If the repo rules or environment prevent that path, block.
+- Preserve the implementation handoff and final report content.
+
+## Publish Sequence
+
+1. Confirm the branch, worktree path, base branch, and clean status.
+2. Confirm `gh auth status` succeeds.
+3. Build the PR title and body from the final implementation report and handoff.
+4. Publish the branch and open the PR with `gh pr create --push --base <base-branch> --head <branch> --title "<title>" --body "<body>"`.
+5. Capture the PR URL from the `gh` output or `gh pr view`.
+6. Record the PR URL in the handoff or final response.
+7. Clean up the local worktree after the PR exists.
+8. Delete the local feature branch only if it is safe and no longer needed.
+
+## Cleanup Rules
+
+- Remove the worktree only after the PR URL is known.
+- If the worktree is dirty beyond workflow notes, stop and report blocked
+  cleanup.
+- If the branch should stay local for follow-up work, keep it and only remove the
+  worktree.
+- If the project keeps local publish notes, do not leave them behind in the
+  removed worktree.
+
+## Output
+
+Return this structure:
+
+```text
+Status:
+Branch:
+Worktree:
+Base:
+PR:
+  URL:
+  Number:
+Publish:
+  Command:
+  Result:
+Cleanup:
+  Worktree:
+  Branch:
+  Result:
+Notes:
+```
+
+Use `none` only when a field truly does not apply.

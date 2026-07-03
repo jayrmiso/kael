@@ -1,39 +1,4 @@
 [[rule]]
-id = "kael-deny-git-push-main-master"
-decision = "forbidden"
-justification = "Kael may publish implementation branches, but must never push directly to protected branches."
-command = ["git", "push", "origin", ["main", "master"]]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-git-push-head-to-main-master"
-decision = "forbidden"
-justification = "Kael may publish implementation branches, but must never push HEAD directly to protected branches."
-command = ["git", "push", "origin", ["HEAD:main", "HEAD:master"]]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-git-merge"
-decision = "forbidden"
-justification = "Kael builders must not merge branches. Merge only through the project's approved workflow after user review."
-command = ["git", "merge"]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-git-switch-main-master"
-decision = "forbidden"
-justification = "Kael implementation must not switch back to protected branches during write work."
-command = ["git", "switch", ["main", "master"]]
-append_wildcard = true
-
-[[rule]]
-id = "kael-deny-git-checkout-main-master"
-decision = "forbidden"
-justification = "Kael implementation must not check out protected branches during write work."
-command = ["git", "checkout", ["main", "master"]]
-append_wildcard = true
-
-[[rule]]
 id = "kael-deny-git-reset-hard"
 decision = "forbidden"
 justification = "Destructive resets can discard user work. Kael must preserve existing changes and report conflicts."
