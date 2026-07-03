@@ -56,6 +56,8 @@ outputs.
   implementation work.
 - Never mark the handoff `Ready for user test` until the manual test command
   block has been appended to the handoff.
+- Never leave `.kael/handoff.md` dirty at the end of implementation; commit it
+  onto the implementation branch.
 - Preserve unrelated user changes.
 
 ## Approved Plan Gate
@@ -221,8 +223,8 @@ ends in a real commit with a conventional commit message.
 
 Rules:
 
-- Each `kael-builder` must make exactly one commit for its assigned completed
-  scope after checks pass.
+- Each `kael-builder` must make exactly one implementation commit for its
+  assigned completed scope after checks pass.
 - The commit subject must use:
 
 ```text
@@ -237,8 +239,15 @@ Rules:
   unassigned files are present, treat that as blocked.
 - The orchestrator must collect and report every builder commit hash and
   subject.
-- If the orchestrator writes `.kael/handoff.md` after builder commits, leave it
-  uncommitted unless the user explicitly wants workflow notes committed.
+- After writing or updating `.kael/handoff.md`, the orchestrator must commit
+  that file on the implementation branch with:
+
+```text
+docs(kael): update implementation handoff
+```
+
+- The handoff commit is allowed in addition to builder implementation commits.
+  It must include only `.kael/handoff.md`.
 
 ## Orchestrator Review
 
@@ -296,11 +305,12 @@ Rules:
 - Run this gate only after builder commits, orchestrator review, and the Manual
   Test Handoff Gate are complete or explicitly blocked.
 - Push only the selected non-protected implementation branch from the selected
-  worktree/check-out path. Never push `main`, `master`, or the default branch.
+  worktree/check-out path through the wrapper. Never push `main`, `master`, or
+  the default branch.
 - Publish from the current implementation branch with the installed Kael publish
-  wrapper; do not run direct `git push`, do not pass `--head`, and do not
-  create branch refs with the GitHub git refs API. Let `gh` prompt for the
-  remote when the branch is not yet published.
+  wrapper; do not run direct `git push` outside the wrapper, and do not create
+  branch refs with the GitHub git refs API. The wrapper commits dirty handoff,
+  pushes the branch, then creates the PR.
 - Use a command shaped like:
 
 ```bash
@@ -311,7 +321,8 @@ Rules:
   installed skill asset path under `.claude/skills/kael-publish/bin` or
   `.opencode/skills/kael-publish/bin`.
 - If the publish wrapper fails, report the exact failure. Do not fall back to
-  `git push`, `gh pr create --head`, or GitHub git-ref API branch creation.
+  manual `git push`, manual `gh pr create --head`, or GitHub git-ref API branch
+  creation.
 - The PR body must include the handoff, manual test command, tests, risks, and
   what the user should test.
 - Never approve your own PR, merge the PR, close the PR, switch local main, pull

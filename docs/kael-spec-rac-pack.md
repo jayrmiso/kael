@@ -11,8 +11,8 @@ small:
 - protected non-main implementation branch/worktree
 - conventional commit messages for completed implementation scopes
 - manual test handoff from the implementation worktree
-- optional PR publication from the implementation worktree with `gh` when
-  explicitly requested
+- optional PR publication that commits the Kael handoff, pushes the feature
+  branch, and creates a PR when explicitly requested
 - PR merge workflow that merges the PR on GitHub and syncs local `main`
 - approved Kael wrapper scripts for publish/merge so RAC starter deny rules do
   not leave the workflow blocked
@@ -34,7 +34,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.20
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.21
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -77,7 +77,7 @@ Kael Spec always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended manual test command and what to test next |
-| Publish / cleanup | `/kael-publish` | approved Kael `gh` wrapper from current branch, PR URL, local worktree cleanup |
+| Publish / cleanup | `/kael-publish` | approved Kael wrapper commits handoff, pushes branch, creates PR, then cleans up local worktree |
 | Merge | `/kael-merge` | approved Kael merge wrapper on GitHub and sync local `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
@@ -127,7 +127,9 @@ it.
 `.agents/skills/kael-publish/bin/kael-publish-pr.sh` for Codex. `/kael-merge`
 uses `.agents/skills/kael-merge/bin/kael-merge-pr.sh`. These are intentionally
 the approved wrapper commands for projects that keep RAC starter rules denying
-raw push and direct `gh pr merge`.
+raw push and direct `gh pr merge`. The publish wrapper commits dirty
+`.kael/handoff.md`, pushes the current feature branch, and creates the PR from
+that pushed branch.
 
 By default, `/kael-impl` stops at a committed, PR-ready branch like Zuggie. If
 you explicitly ask it to open a PR, it may hand off to `/kael-publish` to push
@@ -140,14 +142,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.20
+git tag v0.1.21
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.20`, then install it in target projects:
+Create a GitHub release for `v0.1.21`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.20
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.21
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

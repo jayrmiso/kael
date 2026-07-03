@@ -5,9 +5,9 @@ usage() {
   cat <<'USAGE'
 Usage: kael-publish-pr.sh <base-branch> <title> <body-file>
 
-Creates a normal GitHub PR from the current branch. Run this from the finished
-Kael implementation worktree. The script intentionally does not accept --head:
-gh should publish the current branch to the repository remote when prompted.
+Pushes the current Kael implementation branch, then creates a normal GitHub PR.
+Run this from the finished Kael implementation worktree. If .kael/handoff.md is
+dirty, the wrapper commits it before pushing so the handoff is part of the PR.
 USAGE
 }
 
@@ -49,4 +49,17 @@ if [[ "$current_branch" == "main" || "$current_branch" == "master" || ( -n "$def
   exit 2
 fi
 
-gh pr create --base "$base_branch" --title "$title" --body-file "$body_file"
+if [[ -n "$(git status --porcelain -- .kael/handoff.md)" ]]; then
+  git add .kael/handoff.md
+  git commit -m "docs(kael): update implementation handoff"
+fi
+
+dirty_after_handoff="$(git status --porcelain)"
+if [[ -n "$dirty_after_handoff" ]]; then
+  echo "refusing to publish with uncommitted changes outside the Kael handoff:" >&2
+  echo "$dirty_after_handoff" >&2
+  exit 2
+fi
+
+git push -u origin "$current_branch"
+gh pr create --base "$base_branch" --head "$current_branch" --title "$title" --body-file "$body_file"

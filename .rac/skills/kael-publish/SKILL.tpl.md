@@ -1,5 +1,5 @@
 +++
-description = "Kael PR publication workflow: create a normal PR from the current Kael implementation branch through the approved Kael gh wrapper, let gh handle publishing the branch when needed, and clean up the local worktree afterward. Use when /kael-impl is complete and the user asks to open a PR, publish the branch, or clean up the finished worktree."
+description = "Kael PR publication workflow: commit the Kael handoff when needed, push the current implementation branch through the approved Kael wrapper, create a normal PR with GitHub CLI, and clean up the local worktree afterward. Use when /kael-impl is complete and the user asks to open a PR, publish the branch, or clean up the finished worktree."
 
 [vendor.claude.frontmatter]
 version = "0.1.0"
@@ -28,16 +28,17 @@ implementation branch and worktree. Do not implement code.
 - Never delete uncommitted user work.
 - Never create a draft PR.
 - Never bypass repo push rules. Use the installed Kael publish wrapper from the
-  current branch and let `gh` handle the publish prompt when the branch is not
-  yet on a remote.
+  current branch; the wrapper is the approved path for committing handoff,
+  pushing the feature branch, and opening the PR.
 - Do not run direct `git push`; the wrapper is the approved publish path.
 - Do not run direct `gh pr create` unless the installed wrapper file is missing.
-- Do not pass `--head` for a local unpublished branch.
-- Do not pre-publish the branch manually with `git push`.
+- Do not manually pre-publish the branch outside the wrapper.
 - Do not create branch refs with the GitHub git refs API.
 - Do not search for wrapper commands; Kael ships its own wrapper at the
   installed skill asset path.
 - Preserve the implementation handoff and final report content.
+- If `.kael/handoff.md` is dirty, the wrapper must commit it before pushing so
+  the handoff is part of the PR branch.
 
 ## Publish Sequence
 
@@ -45,21 +46,21 @@ implementation branch and worktree. Do not implement code.
 2. Confirm `gh auth status` succeeds.
 3. Build the PR title and body from the final implementation report and handoff.
 4. Write the PR body to a temp file.
-5. Open the PR from the current branch with the installed wrapper:
+5. Commit any dirty `.kael/handoff.md`, push the current branch, and open the PR
+   with the installed wrapper:
    `.agents/skills/kael-publish/bin/kael-publish-pr.sh <base-branch> "<title>" <body-file>`.
    If the target is Claude or OpenCode and that path does not exist, use the
    equivalent installed skill asset path under `.claude/skills/kael-publish/bin`
    or `.opencode/skills/kael-publish/bin`.
-6. If `gh` prompts where to push the branch, accept the repository remote.
-7. Capture the PR URL from the wrapper output.
-8. Clean up the local worktree after the PR exists.
-9. Delete the local feature branch only if it is safe and no longer needed.
+6. Capture the PR URL from the wrapper output.
+7. Clean up the local worktree after the PR exists.
+8. Delete the local feature branch only if it is safe and no longer needed.
 
 ## Cleanup Rules
 
 - Remove the worktree only after the PR URL is known.
-- If the worktree is dirty beyond workflow notes, stop and report blocked
-  cleanup.
+- If the worktree is dirty beyond `.kael/handoff.md`, stop and report blocked
+  publish/cleanup.
 - If the branch should stay local for follow-up work, keep it and only remove the
   worktree.
 - If the project keeps local publish notes, do not leave them behind in the
