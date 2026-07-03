@@ -34,7 +34,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.12
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.13
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -76,7 +76,7 @@ Kael Spec always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
-| Publish / cleanup | `/kael-publish` | `gh pr create --push`, PR URL, local worktree cleanup |
+| Publish / cleanup | `/kael-publish` | push branch, `gh pr create`, PR URL, local worktree cleanup |
 | Merge / changelog | `/kael-merge` | merge PR to `main`, append changelog, commit, push `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
@@ -137,14 +137,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.12
+git tag v0.1.13
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.12`, then install it in target projects:
+Create a GitHub release for `v0.1.13`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.12
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.13
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 
