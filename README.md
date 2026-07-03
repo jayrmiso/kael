@@ -16,6 +16,8 @@ small:
   requested
 - copied `.env.local` or `.env` into the worktree before runtime launch when
   present on the main checkout
+- explicit builder assignment maps in `/kael-spec` when multiple builders are
+  useful
 - compact milestones
 - one or more senior builder workers for independent, non-overlapping code
   milestones
@@ -31,7 +33,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.10
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.11
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -106,6 +108,9 @@ specific checklist of what you should test.
 If the main checkout has `.env.local` or `.env`, Kael copies the best available
 file into the created worktree before launch and reports that source/target path
 in the handoff.
+If the plan includes multiple builders, `/kael-spec` should assign each builder
+to a specific milestone and file/surface set so `/kael-impl` knows exactly what
+to spawn.
 
 The final response must still show the full handoff block. Writing
 `.kael/handoff.md` is a copy of that handoff, not a substitute for displaying
@@ -142,14 +147,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.10
+git tag v0.1.11
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.10`, then use:
+Create a GitHub release for `v0.1.11`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.10
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.11
 ```
 
 ## License

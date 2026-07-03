@@ -1,8 +1,8 @@
 +++
-description = "Plan-only Kael Spec workflow: compact mandatory planning with architecture/module layout, concrete milestones, verification intent, and approval handoff to /kael-impl."
+description = "Plan-only Kael Spec workflow: compact mandatory planning with architecture/module layout, concrete milestones, explicit builder assignment maps, verification intent, and approval handoff to /kael-impl."
 
 [vendor.claude.frontmatter]
-version = "0.1.4"
+version = "0.1.5"
 +++
 
 Create a Kael Spec plan. Do not implement code.
@@ -24,6 +24,7 @@ mandatory before implementation:
 
 - plan before code
 - compact milestones
+- explicit builder assignment map when more than one builder is useful
 - concrete file/surface expectations
 - explicit architecture and module layout for multi-boundary work
 - TDD / Prove-It expectations for behavior changes
@@ -61,10 +62,15 @@ Use this exact section order:
 ## Repo Facts
 ## Architecture / Module Layout
 ## Milestones
+## Builder Assignment Map
 ## Tests / Verification
 ## Risks
 ## Approval
 ```
+
+`## Builder Assignment Map` is optional for single-builder work. When present,
+name each builder, the milestone it owns, and the exact files/surfaces it may
+change. Keep assignments non-overlapping.
 
 `## Approval` must end with:
 
@@ -103,6 +109,8 @@ Reply with "approved" or run: /kael-impl <this approved plan>
 - Every behavior milestone must require TDD or Prove-It evidence.
 - Use `No-test exemption` only for docs-only, copy-only, pure formatting, or
   non-behavioral config work.
+- If the task can safely use parallel workers, specify the builder assignment
+  map directly instead of leaving delegation implicit.
 
 Avoid vague phrases like "update relevant files", "handle edge cases", or "add
 tests" without naming the behavior and verification.

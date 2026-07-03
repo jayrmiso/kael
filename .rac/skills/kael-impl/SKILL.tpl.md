@@ -1,8 +1,8 @@
 +++
-description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, worktree runtime handoff, optional PR publication, and final report."
+description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, builder assignment maps, worktree runtime handoff, optional PR publication, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.10"
+version = "0.1.11"
 +++
 
 Implement an approved Kael Spec plan.
@@ -129,6 +129,8 @@ Layout`.
 - If the plan intentionally chooses a flat structure, require the builder to
   preserve that rationale and keep responsibilities separated within the chosen
   file/module shape.
+- If the plan includes a `## Builder Assignment Map`, treat it as the source of
+  truth for builder spawning, file ownership, and concurrency.
 
 After builders finish, reject or repair the implementation when:
 
@@ -151,9 +153,10 @@ After builders finish, reject or repair the implementation when:
    - Use multiple `kael-builder` agents only when the approved plan contains
      independent milestones with clearly separate files and no shared mutable
      boundary.
-5. For every builder assignment, define exclusive scope: milestone name, owned
-   files/surfaces, forbidden files/surfaces, TDD / Prove-It requirements, and
-   expected output.
+5. For every builder assignment, define exclusive scope: builder name,
+   milestone name, owned files/surfaces, forbidden files/surfaces, TDD /
+   Prove-It requirements, and expected output. If the plan provides a `Builder
+   Assignment Map`, follow it exactly unless a real conflict is discovered.
 6. Invoke the builder or builders.
 7. Wait for every spawned builder to finish. If one builder is slow, keep
    waiting unless the external tool reports a real failure. Do not proceed with
@@ -191,6 +194,7 @@ When spawning `kael-builder`, pass:
 - approved plan text or exact plan reference
 - implementation branch and worktree/check-out path
 - architecture / module layout requirements
+- builder assignment map, if present
 - assigned milestone list
 - exclusive owned files/surfaces
 - forbidden files/surfaces
