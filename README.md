@@ -34,7 +34,7 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.18
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.19
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -78,7 +78,7 @@ Kael always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended manual test command and what to test next |
-| Publish / cleanup | `/kael-publish` | push branch, `gh pr create`, PR URL, local worktree cleanup |
+| Publish / cleanup | `/kael-publish` | `gh pr create` from current branch, PR URL, local worktree cleanup |
 | Merge | `/kael-merge` | merge PR on GitHub and sync local `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
@@ -148,14 +148,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.18
+git tag v0.1.19
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.18`, then use:
+Create a GitHub release for `v0.1.19`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.18
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.19
 ```
 
 ## License

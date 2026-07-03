@@ -298,22 +298,20 @@ Rules:
   Runtime / Preview Handoff Gate are complete or explicitly blocked.
 - Push only the selected non-protected implementation branch from the selected
   worktree/check-out path. Never push `main`, `master`, or the default branch.
-- If the project documents a PR wrapper such as `mise push-branch` or
-  `mise create-pr`, use that wrapper instead of raw `git push` or
-  `gh pr create`.
-- Before using raw `git push`, check for local project RAC rules or docs that
-  forbid it. If a project rule such as `.rac/rules/wrapper-deny.toml` blocks
-  raw push and no wrapper exists, mark PR publication blocked and report that
-  project-level rule as the blocker.
-- Otherwise, publish with commands shaped like:
+- Publish from the current implementation branch with `gh pr create`; do not
+  pre-push the branch, do not pass `--head`, and do not search for wrapper
+  commands first. Let `gh` prompt for the remote when the branch is not yet
+  published.
+- Use a command shaped like:
 
 ```bash
-git push -u origin <implementation-branch>
-gh pr create --base <base-branch> --head <implementation-branch> --title "<title>" --body "<body>"
+gh pr create --base <base-branch> --title "<title>" --body "<body>"
 ```
 
-- The PR body must include the handoff, runtime/preview result, tests, risks,
-  and what the user should test.
+- If `gh pr create` fails, report the exact failure. Do not fall back to
+  `git push`, `gh pr create --head`, or GitHub git-ref API branch creation.
+- The PR body must include the handoff, manual test command, tests, risks, and
+  what the user should test.
 - Never approve your own PR, merge the PR, close the PR, switch local main, pull
   main, or claim local main is updated.
 - If branch push or PR creation fails, keep the implementation handoff intact
@@ -401,19 +399,18 @@ implementation without reading the full chat.
 Kael includes RAC command rules. When installed with `--kind rule`, these rules
 are added on top of the target project's existing RAC rules.
 
-The rules enforce Kael's no-publish/no-destructive-action contract:
+The rules enforce Kael's no-destructive-action contract:
 
 - no direct push to `main` or `master`
-- no direct `git merge`
 - no `git reset --hard`
 - no destructive `git checkout -- ...`
 - no direct `git clean`
-- no `gh pr merge` or `gh pr close`
+- no `gh pr close`
 - no package publishing commands
 - no switching implementation context back to `main` or `master`
 
-If the user explicitly wants a PR, `/kael-impl` may push the implementation
-branch and open a PR after verification. Merge, approval, local main updates,
+If the user explicitly wants a PR, `/kael-impl` may open a PR from the current
+implementation branch after verification. Merge, approval, local main updates,
 and release publishing remain outside Kael implementation.
 
 ## Token Discipline

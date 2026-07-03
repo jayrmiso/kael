@@ -29,8 +29,11 @@ implementation branch and worktree. Do not implement code.
 - Never create a draft PR.
 - Never bypass repo push rules. Use one `gh pr create` from the current branch
   and let gh handle the publish prompt when the branch is not yet on a remote.
-- Do not search for wrapper commands or pre-publish the branch manually unless
-  `gh pr create` fails for an explicit repo-policy reason.
+- Do not pass `--head` for a local unpublished branch.
+- Do not pre-publish the branch manually with `git push`.
+- Do not create branch refs with the GitHub git refs API.
+- Do not search for wrapper commands before trying the direct `gh pr create`
+  flow.
 - Preserve the implementation handoff and final report content.
 
 ## Publish Sequence
