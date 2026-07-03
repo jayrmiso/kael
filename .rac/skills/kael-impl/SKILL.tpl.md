@@ -51,7 +51,7 @@ outputs.
   worktree.
 - Never push or open a PR during implementation unless the user explicitly asks
   for PR publication. When asked, publish only the selected non-protected
-  implementation branch after the runtime handoff gate.
+  implementation branch after the manual test handoff gate.
 - Never accept builder output that lacks a conventional commit for completed
   implementation work.
 - Never mark the handoff `Ready for user test` until the manual test command
@@ -162,8 +162,7 @@ After builders finish, reject or repair the implementation when:
 9. If there is a real blocker, invoke `kael-builder` once more with only the
    blocking findings and an exclusive repair scope. Do not start an open-ended
    repair loop.
-10. Run the Runtime / Preview Handoff Gate from the selected implementation
-    checkout.
+10. Run the Manual Test Handoff Gate from the selected implementation checkout.
 11. If the user explicitly requested PR publication, run the Optional PR
     Publication Gate from the selected implementation checkout.
 12. Produce both `## Handoff` and `## Final Implementation Report`.
@@ -294,21 +293,24 @@ the user explicitly asks for PR publication.
 
 Rules:
 
-- Run this gate only after builder commits, orchestrator review, and the
-  Runtime / Preview Handoff Gate are complete or explicitly blocked.
+- Run this gate only after builder commits, orchestrator review, and the Manual
+  Test Handoff Gate are complete or explicitly blocked.
 - Push only the selected non-protected implementation branch from the selected
   worktree/check-out path. Never push `main`, `master`, or the default branch.
-- Publish from the current implementation branch with `gh pr create`; do not
-  pre-push the branch, do not pass `--head`, and do not search for wrapper
-  commands first. Let `gh` prompt for the remote when the branch is not yet
-  published.
+- Publish from the current implementation branch with the installed Kael publish
+  wrapper; do not run direct `git push`, do not pass `--head`, and do not
+  create branch refs with the GitHub git refs API. Let `gh` prompt for the
+  remote when the branch is not yet published.
 - Use a command shaped like:
 
 ```bash
-gh pr create --base <base-branch> --title "<title>" --body "<body>"
+.agents/skills/kael-publish/bin/kael-publish-pr.sh <base-branch> "<title>" <body-file>
 ```
 
-- If `gh pr create` fails, report the exact failure. Do not fall back to
+- If the wrapper path is unavailable for the active target, use the equivalent
+  installed skill asset path under `.claude/skills/kael-publish/bin` or
+  `.opencode/skills/kael-publish/bin`.
+- If the publish wrapper fails, report the exact failure. Do not fall back to
   `git push`, `gh pr create --head`, or GitHub git-ref API branch creation.
 - The PR body must include the handoff, manual test command, tests, risks, and
   what the user should test.

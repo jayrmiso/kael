@@ -15,8 +15,8 @@ small:
 - optional PR publication from the implementation worktree with `gh` when
   explicitly requested
 - PR merge workflow that merges the PR on GitHub and syncs local `main`
-- copied `.env.local` or `.env` into the worktree before runtime launch when
-  present on the main checkout
+- approved Kael wrapper scripts for publish/merge so RAC starter deny rules do
+  not leave the workflow blocked
 - explicit builder assignment maps in `/kael-spec` when multiple builders are
   useful
 - compact milestones
@@ -34,16 +34,17 @@ From the project where you want to use Kael:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.19
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.20
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
 Use the latest published Kael release tag in `--ref`. Avoid installing from
 `main` for normal projects; release tags keep installs reproducible.
 
-Use `rac init --empty` for a Kael-only setup. The default `rac init` starter
-pack adds project wrapper rules that deny raw `git push`; keep those only when
-your project also provides the approved push/PR wrapper commands.
+Use `rac init --empty` for a Kael-only setup. If a project already used the
+default `rac init`, Kael's installed publish and merge wrapper scripts are the
+approved path around the starter rules that deny raw `git push` and
+`gh pr merge`.
 
 For Codex only:
 
@@ -78,8 +79,8 @@ Kael always plans before code:
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | current handoff plus appended manual test command and what to test next |
-| Publish / cleanup | `/kael-publish` | `gh pr create` from current branch, PR URL, local worktree cleanup |
-| Merge | `/kael-merge` | merge PR on GitHub and sync local `main` |
+| Publish / cleanup | `/kael-publish` | approved Kael `gh` wrapper from current branch, PR URL, local worktree cleanup |
+| Merge | `/kael-merge` | approved Kael merge wrapper on GitHub and sync local `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
 
 ## Rules
@@ -105,10 +106,8 @@ conventional commit subject such as `feat(auth): add user auth guard`.
 
 Before handoff, `/kael-impl` must append a manual test command block and a
 specific checklist instead of running the app. The existing handoff fields stay
-intact; Kael appends the worktree path, the manual test command, and a specific
-checklist of what you should test.
-If the main checkout has `.env.local` or `.env`, Kael mentions the best source
-file to copy before manual testing when relevant.
+intact; Kael appends the worktree path, the manual test command, any relevant
+env-file note, and a specific checklist of what you should test.
 If the plan includes multiple builders, `/kael-spec` should assign each builder
 to a specific milestone and file/surface set so `/kael-impl` knows exactly what
 to spawn.
@@ -116,6 +115,12 @@ to spawn.
 The final response must still show the full handoff block. Writing
 `.kael/handoff.md` is a copy of that handoff, not a substitute for displaying
 it.
+
+`/kael-publish` uses the installed wrapper at
+`.agents/skills/kael-publish/bin/kael-publish-pr.sh` for Codex. `/kael-merge`
+uses `.agents/skills/kael-merge/bin/kael-merge-pr.sh`. These are intentionally
+the approved wrapper commands for projects that keep RAC starter rules denying
+raw push and direct `gh pr merge`.
 
 By default, `/kael-impl` stops at a committed, PR-ready branch like Zuggie. If
 you explicitly ask it to open a PR, it may hand off to `/kael-publish` to push
@@ -148,14 +153,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.19
+git tag v0.1.20
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.19`, then use:
+Create a GitHub release for `v0.1.20`, then use:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.19
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.20
 ```
 
 ## License
