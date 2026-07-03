@@ -2,7 +2,7 @@
 description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, worktree runtime handoff, optional PR publication, and final report."
 
 [vendor.claude.frontmatter]
-version = "0.1.9"
+version = "0.1.10"
 +++
 
 Implement an approved Kael Spec plan.
@@ -266,6 +266,9 @@ Rules:
 
 - Use only the selected non-protected implementation branch and worktree/check-out
   path. Record the exact path in the handoff.
+- Before starting the app, copy the best available environment file from the
+  main checkout into the created worktree root when present. Prefer
+  `.env.local` over `.env`, and do not commit the copied file.
 - Discover the start command from the project itself: package scripts, README,
   compose files, framework defaults, or the builder's reported runtime hints.
   Prefer the smallest command that exercises the changed surface.
@@ -286,6 +289,7 @@ Rules:
 The runtime handoff must identify:
 
 - worktree/check-out path used to start or smoke-test
+- environment file copied into the worktree, if any, and its source path
 - start command or smoke command
 - URL, port, health endpoint, or `none`
 - verification command and observed result
@@ -354,6 +358,8 @@ Next:
 
 Runtime / preview:
   Worktree path:
+  Env source:
+  Env target:
   Start command:
   URL:
   Health / smoke:

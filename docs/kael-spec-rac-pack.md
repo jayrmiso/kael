@@ -13,6 +13,8 @@ small:
 - runtime or smoke handoff from the implementation worktree
 - optional PR publication from the implementation worktree when explicitly
   requested
+- copied `.env.local` or `.env` into the worktree before runtime launch when
+  present on the main checkout
 - compact milestones
 - one or more senior implementation workers for independent, non-overlapping
   milestones
@@ -29,7 +31,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.9
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.10
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -108,6 +110,9 @@ API, UI, or CLI from the implementation worktree when a runnable surface exists.
 The existing handoff fields stay intact; Kael appends the worktree path, start
 command, URL or smoke target, verification command, runtime status, and a
 specific checklist of what you should test.
+If the main checkout has `.env.local` or `.env`, Kael copies the best available
+file into the created worktree before launch and reports that source/target path
+in the handoff.
 
 The final response must still show the full handoff block. Writing
 `.kael/handoff.md` is a copy of that handoff, not a substitute for displaying
@@ -124,14 +129,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.9
+git tag v0.1.10
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.9`, then install it in target projects:
+Create a GitHub release for `v0.1.10`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.9
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.10
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 
