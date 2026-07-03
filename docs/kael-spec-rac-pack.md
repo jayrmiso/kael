@@ -10,7 +10,7 @@ small:
 - explicit architecture / module layout for multi-boundary work
 - protected non-main implementation branch/worktree
 - conventional commit messages for completed implementation scopes
-- runtime or smoke handoff from the implementation worktree
+- manual test handoff from the implementation worktree
 - optional PR publication from the implementation worktree with `gh` when
   explicitly requested
 - PR merge workflow that merges the PR on GitHub, syncs local `main`, updates
@@ -35,7 +35,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.16
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.17
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -76,7 +76,7 @@ Kael Spec always plans before code:
 | Plan | `/kael-spec` | compact spec and milestones |
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
-| Handoff | `/kael-impl` | current handoff plus appended worktree preview/smoke result and what to test next |
+| Handoff | `/kael-impl` | current handoff plus appended manual test command and what to test next |
 | Publish / cleanup | `/kael-publish` | push branch, `gh pr create`, PR URL, local worktree cleanup |
 | Merge / changelog | `/kael-merge` | merge PR on GitHub, sync `main`, append changelog, commit, push `main` |
 | Final report | `/kael-impl` | implementation map, interfaces, verification, risks, follow-ups |
@@ -111,14 +111,12 @@ into flat files without a plan-aligned reason.
 before any builder writes. Completed builder scopes must be committed with a
 conventional commit subject such as `feat(auth): add user auth guard`.
 
-Before handoff, `/kael-impl` must start or smoke-test the changed app, service,
-API, UI, or CLI from the implementation worktree when a runnable surface exists.
-The existing handoff fields stay intact; Kael appends the worktree path, start
-command, URL or smoke target, verification command, runtime status, and a
-specific checklist of what you should test.
-If the main checkout has `.env.local` or `.env`, Kael copies the best available
-file into the created worktree before launch and reports that source/target path
-in the handoff.
+Before handoff, `/kael-impl` must append a manual test command block and a
+specific checklist instead of running the app. The existing handoff fields stay
+intact; Kael appends the worktree path, the manual test command, and a specific
+checklist of what you should test.
+If the main checkout has `.env.local` or `.env`, Kael mentions the best source
+file to copy before manual testing when relevant.
 If the plan includes multiple builders, `/kael-spec` should assign each builder
 to a specific milestone and file/surface set so `/kael-impl` knows exactly what
 to spawn.
@@ -138,14 +136,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.16
+git tag v0.1.17
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.16`, then install it in target projects:
+Create a GitHub release for `v0.1.17`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.16
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.17
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

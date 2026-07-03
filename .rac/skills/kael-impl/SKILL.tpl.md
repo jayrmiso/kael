@@ -1,5 +1,5 @@
 +++
-description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, builder assignment maps, worktree runtime handoff, optional PR publication, and final report."
+description = "Kael implementation workflow: implement an approved Kael Spec in a protected branch/worktree with architecture gates, conventional commits, guardrails, builder assignment maps, manual test handoff, optional PR publication, and final report."
 
 [vendor.claude.frontmatter]
 version = "0.1.11"
@@ -22,7 +22,7 @@ all writes off `main`/`master`/the default branch, wait for every builder to
 finish, run a lightweight orchestrator review, then produce a concrete handoff
 and final implementation report. By default, Kael stops at a PR-ready branch. If
 the user explicitly asks to open a PR, publish only the implementation branch
-from the selected worktree after verification.
+from the selected worktree after the handoff is prepared.
 
 ## Required Agent
 
@@ -54,11 +54,8 @@ outputs.
   implementation branch after the runtime handoff gate.
 - Never accept builder output that lacks a conventional commit for completed
   implementation work.
-- Never mark the handoff `Ready for user test` for a runnable app, service,
-  API, UI, or CLI until the runtime or smoke-test handoff has run from the
-  selected implementation worktree/check-out path.
-- Never run the app preview, service, or smoke command from `main`, `master`, or
-  the repository default branch.
+- Never mark the handoff `Ready for user test` until the manual test command
+  block has been appended to the handoff.
 - Preserve unrelated user changes.
 
 ## Approved Plan Gate
@@ -212,8 +209,8 @@ When spawning `kael-builder`, pass:
   adding unnecessary layers
 - instruction to create or update folders/modules when the approved architecture
   layout requires them
-- instruction to report any known runtime, preview, or smoke-test command that
-  the orchestrator should use for handoff
+- instruction to report any known manual test command that the orchestrator
+  should append for handoff
 
 Use the smallest number of builder invocations that keeps scope clear. Builders
 implement their assigned milestones and report milestone completion.
@@ -260,44 +257,33 @@ After the builder returns, perform a lightweight orchestrator review:
 - inspect risky diffs directly when public behavior, data, auth, persistence, or
   deployment changed
 
-## Runtime / Preview Handoff Gate
+## Manual Test Handoff Gate
 
-Before final handoff, run the changed app, service, API, UI, or CLI from the
-selected implementation worktree/check-out path when the repository has a
-reasonable runtime or smoke command.
+Before final handoff, append a manual test command block and specific checklist
+instead of starting the app.
 
 Rules:
 
 - Use only the selected non-protected implementation branch and worktree/check-out
-  path. Record the exact path in the handoff.
-- Before starting the app, copy the best available environment file from the
-  main checkout into the created worktree root when present. Prefer
-  `.env.local` over `.env`, and do not commit the copied file.
-- Discover the start command from the project itself: package scripts, README,
-  compose files, framework defaults, or the builder's reported runtime hints.
-  Prefer the smallest command that exercises the changed surface.
-- For HTTP apps or services, start the process from the worktree, wait until the
-  server is ready, then verify it with `curl`, a health endpoint, a browser
-  check, or another concrete smoke command.
-- Keep the app running for user testing when the environment supports a durable
-  long-running session. If the environment cannot keep the process alive after
-  handoff, say that clearly and provide the exact restart command.
-- For CLI, library, worker, or non-HTTP changes, run the strongest targeted
-  smoke command instead and set `URL` to `none`.
-- If required env vars, services, seed data, ports, or dependencies are missing,
-  do not fake readiness. Mark the handoff `Blocked` or `Needs follow-up`, list
-  the exact missing items, and provide the next command the user should run.
-- If no runnable surface exists, state `Runtime: not applicable` and explain the
-  reason briefly.
+  path when referencing files or commands in the handoff.
+- Discover the best manual test command from the project itself: package
+  scripts, README, compose files, framework defaults, or the builder's reported
+  runtime hints.
+- Prefer a command the user can run directly from the repo root or a clear
+  project subdirectory.
+- Include the exact `cd` command and the compose/script command the user should
+  run.
+- If the main checkout has `.env.local` or `.env`, mention the best source file
+  the user should copy before manual testing when relevant.
+- Do not fake readiness. If required env vars, services, seed data, ports, or
+  dependencies are missing, mark the handoff `Blocked` or `Needs follow-up` and
+  list the missing items.
 
-The runtime handoff must identify:
+The handoff must identify:
 
-- worktree/check-out path used to start or smoke-test
-- environment file copied into the worktree, if any, and its source path
-- start command or smoke command
-- URL, port, health endpoint, or `none`
-- verification command and observed result
-- runtime status: running, stopped after smoke, not applicable, or blocked
+- manual test command block
+- any env file to copy before running the command
+- any prerequisite services, ports, or data the user needs
 - specific things the user should test next
 
 ## Optional PR Publication Gate
@@ -360,15 +346,11 @@ Manual checks:
 Risks:
 Next:
 
-Runtime / preview:
-  Worktree path:
+Manual test:
+  Manual test command:
   Env source:
   Env target:
-  Start command:
-  URL:
-  Health / smoke:
-  Verification command:
-  Runtime status:
+  Prereqs:
 What to test:
 PR:
   Requested:
@@ -378,10 +360,10 @@ PR:
   Publish command:
 ```
 
-Keep the original handoff fields intact. Append `Runtime / preview`, `What to
-test`, and `PR` after `Next`. `What to test` must be specific to the change.
-Name the actual screens, routes, API calls, commands, states, and negative paths
-the user should verify. Do not write generic advice like "test the app".
+Keep the original handoff fields intact. Append `Manual test`, `What to test`,
+and `PR` after `Next`. `What to test` must be specific to the change. Name the
+actual screens, routes, API calls, commands, states, and negative paths the user
+should verify. Do not write generic advice like "test the app".
 
 ## Final Implementation Report
 
@@ -402,7 +384,7 @@ API / interface shape:
 Architecture / module layout:
 Data / state / migration notes:
 Tests / verification:
-Runtime / preview verification:
+Manual test verification:
 PR / publication:
 TDD / Prove-It evidence:
 Orchestrator review:
