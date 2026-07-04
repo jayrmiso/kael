@@ -18,6 +18,8 @@ small:
   not leave the workflow blocked
 - explicit builder assignment maps in `/kael-spec` when multiple builders are
   useful
+- builder packets so the orchestrator/spec researches once and builders execute
+  scoped instructions without broad repo discovery
 - compact milestones
 - one or more senior implementation workers for independent, non-overlapping
   milestones
@@ -34,7 +36,7 @@ From the target project:
 
 ```bash
 npx @raniejade/rac init --empty
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.24
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.25
 npx @raniejade/rac install --targets claude,codex --kind agent,skill,rule
 ```
 
@@ -73,7 +75,7 @@ Kael Spec always plans before code:
 
 | Step | Owner | Output |
 | --- | --- | --- |
-| Plan | `/kael-spec` | compact spec and milestones |
+| Plan | `/kael-spec` | compact spec, milestones, and builder packet |
 | Approval | user | explicit approval to implement |
 | Build | `/kael-impl` + `kael-builder` | code, tests, self-review; multiple builders only for non-overlapping milestones |
 | Handoff | `/kael-impl` | concise committed handoff with manual test command and what to test next |
@@ -117,6 +119,11 @@ If the plan includes multiple builders, `/kael-spec` should assign each builder
 to a specific milestone and file/surface set so `/kael-impl` knows exactly what
 to spawn.
 
+`/kael-spec` must include a `Builder Packet` with read-first files, allowed
+searches, files to edit, forbidden files, existing helpers/patterns, exact
+implementation steps, verification, commit subject, and stop conditions. Builders
+read the packet and execute it instead of researching the repo broadly.
+
 The final response must still show the full handoff block. Writing
 `.kael/handoff.md` is a copy of that handoff, not a substitute for displaying
 it.
@@ -139,14 +146,14 @@ Kael is installed like Zuggie: publish this repository to GitHub, tag a release,
 then users install that tag with RAC.
 
 ```bash
-git tag v0.1.24
+git tag v0.1.25
 git push origin main --tags
 ```
 
-Create a GitHub release for `v0.1.24`, then install it in target projects:
+Create a GitHub release for `v0.1.25`, then install it in target projects:
 
 ```bash
-npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.24
+npx @raniejade/rac pack add kael github:jayrmiso/kael --ref v0.1.25
 npx @raniejade/rac install --targets codex --kind agent,skill,rule
 ```
 

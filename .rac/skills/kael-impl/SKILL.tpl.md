@@ -133,6 +133,9 @@ Layout`.
   file/module shape.
 - If the plan includes a `## Builder Assignment Map`, treat it as the source of
   truth for builder spawning, file ownership, and concurrency.
+- If the plan includes a `## Builder Packet`, treat it as the source of truth
+  for builder context. If it is missing, create a concise packet before invoking
+  builders by inspecting only the files needed for the approved task.
 
 After builders finish, reject or repair the implementation when:
 
@@ -156,8 +159,9 @@ After builders finish, reject or repair the implementation when:
      boundary.
 5. For every builder assignment, define exclusive scope: builder name,
    milestone name, owned files/surfaces, forbidden files/surfaces, TDD /
-   Prove-It requirements, and expected output. If the plan provides a `Builder
-   Assignment Map`, follow it exactly unless a real conflict is discovered.
+   Prove-It requirements, builder packet, and expected output. If the plan
+   provides a `Builder Assignment Map`, follow it exactly unless a real conflict
+   is discovered.
 6. Invoke the builder or builders.
 7. Wait for every spawned builder to finish. If one builder is slow, keep
    waiting unless the external tool reports a real failure. Do not proceed with
@@ -197,10 +201,22 @@ When spawning `kael-builder`, pass:
 - exclusive owned files/surfaces
 - forbidden files/surfaces
 - exact scope boundaries
+- builder packet:
+  - files to read first
+  - allowed searches by exact symbol/name only
+  - files to edit
+  - forbidden files
+  - existing patterns/helpers to reuse
+  - exact implementation steps
+  - verification command or no-test exemption
+  - stop-and-ask conditions
 - required TDD or Prove-It evidence
 - minimal verification command, if known
 - compatibility or migration requirements
 - instruction that each `kael-builder` owns only its assigned write path
+- instruction to read only packet-listed files first and avoid broad repo
+  discovery; if needed context is missing, report `Missing context` to the
+  orchestrator instead of searching unrelated folders
 - instruction that builders must refuse to edit if they are on `main`,
   `master`, or the default branch
 - instruction to make exactly one conventional commit for the assigned scope
@@ -216,6 +232,22 @@ When spawning `kael-builder`, pass:
 
 Use the smallest number of builder invocations that keeps scope clear. Builders
 implement their assigned milestones and report milestone completion.
+
+## Builder Packet Rules
+
+The orchestrator does repo discovery once. Builders execute packets.
+
+- Prefer packets from `/kael-spec`.
+- If the approved plan lacks a packet, build one before spawning builders by
+  reading only task-relevant files.
+- Do not send builders vague instructions like "inspect the repo" or "find the
+  relevant files".
+- Packets must include read-first files, allowed searches, edit files,
+  forbidden files, exact steps, verification, commit subject, and stop
+  conditions.
+- For multi-builder work, every builder gets its own non-overlapping packet.
+- If a builder reports `Missing context`, provide the missing file/symbol or
+  revise the packet; do not ask the builder to broaden discovery.
 
 ## Commit Discipline
 

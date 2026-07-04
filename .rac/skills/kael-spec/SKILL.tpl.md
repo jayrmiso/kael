@@ -1,5 +1,5 @@
 +++
-description = "Plan-only Kael Spec workflow: compact mandatory planning with architecture/module layout, concrete milestones, explicit builder assignment maps, verification intent, and approval handoff to /kael-impl."
+description = "Plan-only Kael Spec workflow: compact mandatory planning with architecture/module layout, concrete milestones, explicit builder packets, verification intent, and approval handoff to /kael-impl."
 
 [vendor.claude.frontmatter]
 version = "0.1.5"
@@ -24,6 +24,8 @@ mandatory before implementation:
 
 - plan before code
 - compact milestones
+- explicit builder packet so implementation workers do not repeat broad repo
+  discovery
 - explicit builder assignment map when more than one builder is useful
 - concrete file/surface expectations
 - explicit architecture and module layout for multi-boundary work
@@ -38,15 +40,15 @@ mandatory before implementation:
 - Ask a blocking question only when the answer cannot be discovered from the
   repo and choosing wrong would change product behavior, public interfaces, or
   migration intent.
-- Keep the plan concrete enough that `/kael-impl` and `kael-builder` can execute
-  without guessing.
+- Keep the plan concrete enough that `/kael-impl` can hand builders scoped
+  packets and builders can execute without broad repo discovery.
 
 ## Planning Sequence
 
 1. Restate the goal in one sentence.
 2. Inspect only the files needed to understand the task and local conventions.
-3. Identify the likely changed files, commands, interfaces, architecture
-   boundaries, and risks.
+3. Identify the likely changed files, read-first files, commands, interfaces,
+   architecture boundaries, and risks.
 4. Produce the Kael Spec plan.
 5. Stop for approval.
 
@@ -62,15 +64,32 @@ Use this exact section order:
 ## Repo Facts
 ## Architecture / Module Layout
 ## Milestones
+## Builder Packet
 ## Builder Assignment Map
 ## Tests / Verification
 ## Risks
 ## Approval
 ```
 
-`## Builder Assignment Map` is optional for single-builder work. When present,
-name each builder, the milestone it owns, and the exact files/surfaces it may
-change. Keep assignments non-overlapping.
+`## Builder Packet` is required. Keep it concise and operational:
+
+```text
+Read first:
+Allowed search:
+Files to edit:
+Forbidden files:
+Existing patterns/helpers:
+Exact implementation steps:
+Verification:
+Commit subject:
+Stop and ask if:
+```
+
+For multiple builders, either include one packet per builder or make the
+`## Builder Assignment Map` point to packet names. `## Builder Assignment Map`
+is optional for single-builder work. When present, name each builder, the
+milestone it owns, and the exact files/surfaces it may change. Keep assignments
+non-overlapping.
 
 `## Approval` must end with:
 
@@ -106,6 +125,8 @@ Reply with "approved" or run: /kael-impl <this approved plan>
   - implementation steps
   - test-first or verification intent
   - acceptance criteria
+- The builder packet must list the minimum files the builder should read before
+  editing. Do not ask builders to rediscover the repository.
 - Every behavior milestone must require TDD or Prove-It evidence.
 - Use `No-test exemption` only for docs-only, copy-only, pure formatting, or
   non-behavioral config work.
@@ -120,4 +141,6 @@ tests" without naming the behavior and verification.
 - Read the right files, not every file.
 - Keep the plan under about 900 words unless the work genuinely needs more.
 - Prefer exact paths, commands, and acceptance checks over long explanation.
+- Put repo facts and existing helper names in the builder packet so builders can
+  execute instead of researching.
 - Stop after the plan. Implementation belongs to `/kael-impl`.

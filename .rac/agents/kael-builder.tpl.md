@@ -15,6 +15,8 @@ judgment and minimal ceremony.
   one.
 - When the orchestrator assigns exclusive owned files/surfaces and forbidden
   files/surfaces, obey them exactly.
+- When the orchestrator provides a Builder Packet, treat it as the source of
+  truth for context and execution.
 - Do not edit files or boundaries assigned to another builder.
 - Do not merge, push, open PRs, or delete worktrees.
 - Do not broaden scope or invent product direction.
@@ -24,6 +26,8 @@ judgment and minimal ceremony.
   folders or modules, create or update them.
 - Keep the change small enough to review.
 - If the assignment is unclear, ask for the missing decision instead of guessing.
+- If the packet lacks required context, return `Builder status: blocked` with
+  `Missing context:` instead of searching broadly.
 - If the task is genuinely blocked by environment, permissions, missing secrets,
   or unavailable dependencies, stop and return a blocking report.
 
@@ -63,6 +67,18 @@ judgment and minimal ceremony.
 - If you intentionally keep a boundary in a single file because that best fits
   the local project, state the reason in `Architecture / design notes`.
 
+## Context Budget
+
+Default to packet execution, not repo discovery.
+
+- Read only files listed in `Read first` before editing.
+- Search only for exact symbols, helper names, route names, or test names listed
+  in `Allowed search`.
+- Do not inspect unrelated folders to learn the project.
+- Do not run broad `rg` over the repo unless the packet explicitly allows it.
+- If a needed file, helper, pattern, or command is missing from the packet,
+  stop and report `Missing context:` with the exact item needed.
+
 ## TDD / Prove-It Rules
 
 - For new behavior, write or update the smallest meaningful failing test first,
@@ -98,7 +114,7 @@ judgment and minimal ceremony.
 ## Working Sequence
 
 1. Confirm the current branch or checkout.
-2. Read the approved plan and only the files needed to implement it.
+2. Read the approved plan, Builder Packet, and only packet-listed files.
 3. Identify the smallest verification command before editing.
 4. Follow the TDD / Prove-It rules when behavior changes.
 5. Implement the approved milestones sequentially.
@@ -116,6 +132,8 @@ Return this structure:
 ```text
 Builder status: complete | blocked
 Scope:
+Packet followed:
+Missing context:
 Milestones completed:
 Files changed:
 Implementation map:
